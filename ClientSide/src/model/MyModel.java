@@ -2,19 +2,18 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import presenter.Properties;
-import algorithms.demo.MazeSearch;
 import algorithms.mazeGenerators.Maze;
-import algorithms.search.BFS;
 import algorithms.search.Solution;
 
 
@@ -35,7 +34,8 @@ public class MyModel extends Observable implements Model
 	//private HashMap<String,HashMap<Maze, Solution>> msols;
 	private Properties pro;
 	private Socket myServer;
-	private ObjectInputStream inFromServer;
+	//private ObjectInputStream inFromServer;
+	private BufferedReader inFromServer;
 	private PrintWriter outToServer;
 	private BufferedReader inFromUser;
 	
@@ -67,6 +67,14 @@ public class MyModel extends Observable implements Model
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		try 
+		{
+			outToServer = new PrintWriter(new OutputStreamWriter(myServer.getOutputStream()));
+		} catch (IOException e1) 
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		/*inFromServer = null;
 		try 
@@ -175,10 +183,10 @@ public class MyModel extends Observable implements Model
 			System.out.println("The hint maze is NOT null");
 			outToServer.println("hint maze"+ " " + mazeName + s);
 			outToServer.flush();
-			Solution sol2 = null;
-			try 
+			//Solution sol2 = null;
+			/*try 
 			{
-				sol2 = (Solution) inFromServer.readObject();
+				//sol2 = (Solution) inFromServer.readObject();
 				
 			} 
 			catch (IOException e) 
@@ -191,8 +199,8 @@ public class MyModel extends Observable implements Model
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return sol2;
-			
+			//return sol2;*/
+			return null;
 			
 			/*MazeSearch ms1 = new MazeSearch(maze,false);
 			ms1.setStartState(s);
@@ -222,6 +230,21 @@ public class MyModel extends Observable implements Model
 		outToServer.flush();
 		try 
 		{
+			inFromServer = new BufferedReader(new InputStreamReader(myServer.getInputStream()));
+		} catch (IOException e1) 
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			String str = inFromServer.readLine();
+			System.out.println(str);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*try 
+		{
 			maze = (Maze) inFromServer.readObject();
 		} catch (IOException e) 
 		{
@@ -231,7 +254,7 @@ public class MyModel extends Observable implements Model
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		System.out.println("generated a maze");
 		
 	}
@@ -254,7 +277,7 @@ public class MyModel extends Observable implements Model
 	{
 		outToServer.println("solve maze"+ " " + mazeName);
 		outToServer.flush();
-		try 
+		/*try 
 		{
 			sol = (Solution) inFromServer.readObject();
 		} 
@@ -266,7 +289,7 @@ public class MyModel extends Observable implements Model
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		System.out.println("solved the maze "+ mazeName);
 	}
 

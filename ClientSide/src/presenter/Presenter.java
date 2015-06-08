@@ -274,11 +274,10 @@ public class Presenter implements Observer{
 			System.out.println("The maze already exist");
 			return null;
 		}
+		m.setName(name);
 		m.generateMaze(rows,cols);
 		Maze maze = m.getMaze();
 		mazes.put(name, maze);
-		
-		m.setName(name);
 		System.out.println("Solution for " + command + " is ready!");			
 		BufferedReader reader = null;
 		try {
