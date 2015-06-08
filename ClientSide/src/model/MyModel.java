@@ -226,7 +226,7 @@ public class MyModel extends Observable implements Model
 	@Override
 	public void generateMaze(int rows, int cols) 
 	{
-		outToServer.println("generate maze"+ " " + mazeName + rows + " "+ cols);
+		outToServer.println("generate maze"+ " " + mazeName + " " + rows + " "+ cols);
 		outToServer.flush();
 		try 
 		{
@@ -236,9 +236,10 @@ public class MyModel extends Observable implements Model
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		String line = null;
 		try {
-			String str = inFromServer.readLine();
-			System.out.println(str);
+			line = inFromServer.readLine();
+			System.out.println(line);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
