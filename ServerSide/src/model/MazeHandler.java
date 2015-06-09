@@ -119,7 +119,8 @@ public class MazeHandler implements ClientHandler
 			//oos.close();
 			//gz.flush();
 			//outstream.flush();
-			gz.close();
+			//gz.close();
+			gz.finish();
 			//outstream.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
