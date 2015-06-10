@@ -30,6 +30,7 @@ public class MazeHandler implements ClientHandler
 		//need to do this part :) TODO
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inFromClient));
 		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(outToClient));
+		
 		PropertiesServer pro = expandMaze(inFromClient);
 		String line = null;
 		MyModel m = new MyModel(pro);

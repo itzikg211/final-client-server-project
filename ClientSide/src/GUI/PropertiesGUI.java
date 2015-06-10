@@ -142,13 +142,28 @@ public class PropertiesGUI extends BasicWindow
 			public void widgetSelected(SelectionEvent arg0) 
 			{
 				if(MazeSolver1.getText().equals("A* without diagonals"))
+				{
+					System.out.println("A* without diagonals");
 					pro.setMazeSolver(MazeSolver.ASTAR_MANHATTAN_DISTANCE);
+					pro.setDiagonal(false);
+				}
 				if(MazeSolver1.getText().equals("A* with diagonals"))
+				{
+					System.out.println("A* with diagonals");
 					pro.setMazeSolver(MazeSolver.ASTAR_AIR_DISTANCE);
+					pro.setDiagonal(true);
+				}
 				if(MazeSolver1.getText().equals("BFS with diagonals"))
+				{
 					pro.setMazeSolver(MazeSolver.BFS_DIAGONAL);
+					pro.setDiagonal(true);
+				}
 				if(MazeSolver1.getText().equals("BFS without diagonals"))
+				{
 					pro.setMazeSolver(MazeSolver.BFS_NO_DIAGONAL);
+					pro.setDiagonal(false);
+				}
+				
 			}
 			
 			@Override
@@ -264,6 +279,7 @@ public class PropertiesGUI extends BasicWindow
 			{
 				display.dispose();
 				GUIStart guis = new GUIStart("Start",1000,800);
+				pro.setDiagonal(true);
 				guis.setProperties(pro);
 				guis.run();
 			}
