@@ -1,6 +1,5 @@
 package GUI;
 
-
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
@@ -28,6 +27,7 @@ import algorithms.search.Solution;
 
 public class Board extends Composite
 {
+	//those are the Board variables
 	int mazeR;
 	int mazeC;
 	Tile[][] tiles;
@@ -70,14 +70,13 @@ public class Board extends Composite
 				}
 				if(tiles==null){
 					int width=(int)(parent.getSize().x*0.80);
-					int height=(int)(parent.getSize().y*0.88);
+					int height=(int)(parent.getSize().y*0.9);
 					ImageData data = new ImageData("resources/mainPic.png");
 					arg0.gc.drawImage(new Image(getDisplay(),"resources/mainPic.png"),0,0,data.width,data.height,0,0,width, height);
 				}
 			}
 		});
-
-		
+					
 	}
 	
 	 /**
@@ -114,8 +113,10 @@ public class Board extends Composite
 				tiles[i][j].setBeforeImage(temp);
 			}
     	tiles[0][0].setFirstTile(true);
+    	tiles[mazeR-1][mazeC-1].setFinalImg(true);
 		layout();
 	}
+	
 	
 	 /**
 	   * This is the setHint method. 
@@ -160,6 +161,10 @@ public class Board extends Composite
 		
 		if(tiles[i][j].isCircle())
 		{
+			if((i==1 && j==0) || (i==0 && j==1))
+			{
+				tiles[0][0].removeCircle();
+			}
 			System.out.println(i + "," + j + " has circle");
 			tiles[i][j].removeCircle();
 		}
@@ -185,7 +190,7 @@ public class Board extends Composite
 	
 	public boolean canMove(int i,int j,int dir)
 	{
-		//tiles[0][0].redraw();
+		tiles[0][0].redraw();
 		boatI = i;
 		boatJ = j;
 		System.out.println();
@@ -375,9 +380,35 @@ public class Board extends Composite
 			Image arrow;
 			y=arr.get(arr.size()-i);
 			x=arr.get(arr.size()-i-1);
-			System.out.println("A : " + a + " B : "+b);
-			System.out.println("X : " + x + " Y : "+y);
-			if(x == a+1) //direction is right
+			if(y == b-1 && x == a-1) //direction is up left
+			{
+				arrow = new Image(null, "resources/arrow-up-left.png"); 
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(y == b-1 && x == a+1) //direction is up right
+			{
+				arrow = new Image(null, "resources/arrow-down-left.png"); 
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(y == b+1 && x == a-1) //direction is down left
+			{
+				arrow = new Image(null, "resources/arrow-up-right.png"); 
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(y == b+1 && x == a+1) //direction is down right
+			{
+				arrow = new Image(null, "resources/arrow-down-right.png");
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(x == a+1) //direction is right
 			{
 				arrow = new Image(null, "resources/arrow-down.png"); 
 				tiles[a][b].putArrow(arrow);
@@ -403,12 +434,34 @@ public class Board extends Composite
 				tiles[a][b].putArrow(arrow);
 				b=y;
 			}
+			
 			redraw();
 		}
 	}
+	
+	 /**
+	   * This is the setAllHintsToFalse method. 
+	   * <p>The thing it does is setting up all the hints to be false by redrawing them.
+	   * @param x <b>(int) </b>This is the first parameter to the displaySolution method
+	   * @param y <b>(int) </b>This is the second parameter to the displaySolution method
+	   * @return Nothing.
+	   */
+	
+	public void setAllHintsToFalse(int x,int y)
+	{
+		for(int i=0;i<tiles.length;i++)
+			for(int j=0;j<tiles[0].length;j++)
+			{
+				if(i!=x && j!= y)
+				{
+					tiles[i][j].removeHint();
+					tiles[i][j].redraw();
+				}
+			}
+	}
 
 	/////All the getters and setters.
-	
+
 	public void setX(int a)
 	{
 		this.boatI=a;

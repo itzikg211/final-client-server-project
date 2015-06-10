@@ -144,7 +144,8 @@ public class MazeHandler implements ClientHandler
 		try 
 		{
 			gz = new GZIPOutputStream(outstream);
-		} catch (IOException e1) 
+		} 
+		catch (IOException e1) 
 		{
 			e1.printStackTrace();
 		}
@@ -152,7 +153,8 @@ public class MazeHandler implements ClientHandler
 		try 
 		{
 			oos = new ObjectOutputStream(gz);
-		} catch (IOException e1) 
+		} 
+		catch (IOException e1) 
 		{
 			e1.printStackTrace();
 		}

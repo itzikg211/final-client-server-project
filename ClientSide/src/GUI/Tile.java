@@ -18,16 +18,19 @@ import org.eclipse.swt.widgets.Composite;
  
 public class Tile extends Canvas
 {
-	Image beforeImage;
-	Image tileImg;
-	int clickI,clickJ,unclickI,unclickJ,slope;
-	int a,b,temp1,temp2;
-	Image arrowImage;
-	Boat boat;
-	Image boatImg;
-	boolean firstTile;
-	boolean hint = false;
-	boolean circle = false;
+	private Image beforeImage;
+	private Image tileImg;
+	private int clickI,clickJ,unclickI,unclickJ;
+	private int a,b,temp1,temp2,mouseDir;
+	private Image arrowImage;
+	private Boat boat;
+	private Image boatImg;
+	private boolean firstTile;
+	private boolean hint = false;
+	private boolean circle = false;
+	private boolean finalImg = false;
+	int width,height;
+
 	/**
 	 * Constructs and initializes the class Tile
 	 * @param 
@@ -39,12 +42,15 @@ public class Tile extends Canvas
 			@Override
 			public void paintControl(PaintEvent e) 
 			{
-					int width=getSize().x;
-					int height=getSize().y;
+					width=getSize().x;
+					height=getSize().y;
 			        ImageData data = tileImg.getImageData();
 			        e.gc.drawImage(tileImg,0,0,data.width,data.height,temp1,temp2,width,height);
 			        if(hint)
 			        {
+			        	/*e.gc.setForeground(new Color(null,255,0,0));
+			        	e.gc.setBackground(new Color(null,255,0,0));
+			        	e.gc.fillRectangle(width/3, height/3, width/3, height/3);*/
 			        	Image galgal = new Image(null, "resources/galgal.jpg");
 			        	ImageData data1 = galgal.getImageData();
 			        	e.gc.drawImage(galgal,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
@@ -53,7 +59,6 @@ public class Tile extends Canvas
 			        {
 			        	ImageData data1 = boatImg.getImageData();
 						e.gc.drawImage(boatImg,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
-						circle = false;
 			        }
 			        if(firstTile)
 			        {
@@ -63,8 +68,17 @@ public class Tile extends Canvas
 			        }
 			        if(circle == true)
 			        {
+			        	//e.gc.setForeground(new Color(null,255,200,0));
+						/*e.gc.setBackground(new Color(null,200,100,0));
+						e.gc.fillOval(width/3, height/3, width/3, height/3);*/
+			        	//e.gc.drawLine(0, 0, width, height);
 			        	ImageData data1 = arrowImage.getImageData();
 			        	e.gc.drawImage(arrowImage,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
+			        }
+			        if(finalImg == true)
+			        {
+			        	ImageData data1 = new Image(null, "resources/final.png").getImageData();
+			        	e.gc.drawImage(new Image(null, "resources/final.png"),0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));
 			        }
 			}
 		});
@@ -87,6 +101,38 @@ public class Tile extends Canvas
 				}
 				double sl =  (double)(clickJ-unclickJ)/(double)(clickI-unclickI);
 				System.out.println("THE SLOPE IS : " + sl);
+				if(clickJ < unclickJ )
+				{
+					if((sl > 2.5) || (sl < -2.5 )) //down
+					{
+						mouseDir = 2;
+						//System.out.println("Dir is DOWN");
+					}
+				}
+				if(clickJ > unclickJ )
+				{
+					if((sl > 2.5) || (sl < -2.5 )) //up
+					{
+						mouseDir = 0;
+						//System.out.println("Dir is UP");
+					}
+				}
+				if(clickI < unclickI )
+				{
+					if((sl < 0.5) && (sl > -0.5 )) //right
+					{
+						mouseDir = 1;
+						//System.out.println("Dir is RIGHT");
+					}
+				}
+				if(clickI > unclickI )
+				{
+					if((sl < 0.5) && (sl > -0.5 )) //left
+					{
+						mouseDir = 3;
+						//System.out.println("Dir is LEFT");
+					}
+				}
 			}
 			@Override
 			public void mouseDown(MouseEvent arg0) { //when you press the mouse
@@ -214,14 +260,25 @@ public class Tile extends Canvas
 	 * 
 	 * @return returns if this tile is the first tile
 	 */
-	public boolean isFirstTile() {
+	public boolean isFirstTile() 
+	{
 		return firstTile;
 	}
 	/**
 	 * Sets if the tile is the first tile or not
 	 * @param firstTile boolean variable that stated if this tile is the first tile
 	 */
-	public void setFirstTile(boolean firstTile) {
+	public void setFirstTile(boolean firstTile) 
+	{
 		this.firstTile = firstTile;
+	}
+	public boolean isFinalImg() 
+	{
+		return finalImg;
+	}
+
+	public void setFinalImg(boolean finalImg) 
+	{
+		this.finalImg = finalImg;
 	}
 }

@@ -392,13 +392,89 @@ public class MyModel extends Observable implements Model
 		}
 		else
 		{
-			System.out.println("The hint maze is NOT null");
-			MazeSearch ms1 = new MazeSearch(maze,false);
-			ms1.setStartState(s);
-			BFS sol1 = new BFS();
-			Solution sol2 = sol1.search(ms1);
-			return sol2;
-		}		
+			Future<Solution> future = null;
+			switch(pro.getMazeSolver())
+			{
+			case BFS_DIAGONAL:
+			future = executor.submit(new Callable<Solution>()
+			{
+                @Override
+                public Solution call() throws Exception 
+                {
+                	notifyObservers("\nSolution BFS with diagonals");
+        			MazeSearch ms2 = new MazeSearch(maze,true);
+        			ms2.setStartState(s);
+        			BFS sol3 = new BFS();
+        			sol = sol3.search(ms2);
+        			return sol;
+                 }
+            });
+			break;
+			case BFS_NO_DIAGONAL:
+			future = executor.submit(new Callable<Solution>()
+			{
+                @Override
+                public Solution call() throws Exception 
+                {
+            		System.out.println("\nSolution BFS without diagonals");
+            		MazeSearch ms1 = new MazeSearch(maze,false);
+            		ms1.setStartState(s);
+            		BFS sol1 = new BFS();
+            		sol = sol1.search(ms1);
+            		return sol;
+                 }
+            });
+			break;
+			case ASTAR_MANHATTAN_DISTANCE:
+			future = executor.submit(new Callable<Solution>()
+			{
+                @Override
+                public Solution call() throws Exception 
+                {
+                	notifyObservers("\nSolution A* without diagonals");
+        			MazeSearch ams1 = new MazeSearch(maze,false);
+        			ams1.setStartState(s);
+        			AStar sol5 = new AStar();
+        			sol5.setH(new MazeManhattanDistance());
+        			sol = sol5.search(ams1);
+        			return sol;
+                 }
+            });
+			break;
+			case ASTAR_AIR_DISTANCE:
+			future = executor.submit(new Callable<Solution>()
+			{
+                @Override
+                public Solution call() throws Exception 
+                {
+            		System.out.println("\nSolution A* with diagonals");
+            		MazeSearch ams2 = new MazeSearch(maze,true);
+            		ams2.setStartState(s);
+            		AStar sol7 = new AStar();
+            		sol7.setH(new MazeAirDistance());
+            		sol = sol7.search(ams2);
+            		return sol;
+                 }
+            });
+			break;
+			}
+			
+			Solution sol1;
+			try 
+			{
+				//////////////////////////added here the get function!!!!!!!!!!!!!!!!!!!!!!!!!!
+				sol1 = future.get();
+			} catch (InterruptedException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return sol;		
 		
 	}
 
