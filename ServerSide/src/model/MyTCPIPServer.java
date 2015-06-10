@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,10 +16,12 @@ public class MyTCPIPServer
 {
 	private int port;
 	private boolean isStopped;
-	
+	int id ;
 	ClientHandler ch;
+	HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
 	public MyTCPIPServer(int port,ClientHandler ch) 
 	{
+		id = 1;
 		this.port = port;
 		this.ch = ch;
 	}
@@ -37,6 +40,9 @@ public class MyTCPIPServer
 				while(!isStopped)
 				{
 					final Socket someClient = myServer.accept();
+					System.out.println("Client number : " + id + " connected! ");
+					id++;
+					clients.put(id, someClient);
 					executor.execute(new Runnable() 
 					{
 						
