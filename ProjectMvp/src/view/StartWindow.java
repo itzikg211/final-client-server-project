@@ -460,7 +460,10 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("solving the maze " + t.getText());
 				String send = "gui solve maze ";
 				send += t.getText();
-				
+				String add = " " + maze.getX() + " " + maze.getY();
+				send += add;
+				System.out.println("POSITION OF THE BOAT : " + maze.getX() +","+maze.getY());
+				System.out.println("SEND : " + send);
 				if(solvedAlready == false)
 				{
 					setChanged();
@@ -480,7 +483,9 @@ public class StartWindow extends BasicWindow implements View
 				}
 				else
 				{
-					maze.displaySolution(sol);
+					MessageBox mb = new MessageBox(shell);
+					mb.setMessage("You already solved the maze");
+					mb.open();
 					maze.forceFocus();
 				}
 			}

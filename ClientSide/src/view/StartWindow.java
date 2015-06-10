@@ -377,7 +377,7 @@ public class StartWindow extends BasicWindow implements View
 							}
 							
 							
-						if(names.length==0)
+						if(names != null)
 						{
 							for(String s: names)
 							{
@@ -482,8 +482,8 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("solving the maze " + t.getText());
 				String send = "gui solve maze ";
 				send += t.getText();
-				int x =  maze.getX()+1;
-				int y = maze.getY()+1;
+				int x =  maze.getX();
+				int y = maze.getY();
 				String add = " " + x + " " + y;
 				send += add;
 				System.out.println("POSITION OF THE BOAT : " + maze.getX() +","+maze.getY());

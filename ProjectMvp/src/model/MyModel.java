@@ -468,7 +468,7 @@ public class MyModel extends Observable implements Model
 		else
 		{
 			System.out.println("The hint maze is NOT null");
-			MazeSearch ms1 = new MazeSearch(maze,false);
+			MazeSearch ms1 = new MazeSearch(maze,true);
 			ms1.setStartState(s);
 			BFS sol1 = new BFS();
 			Solution sol2 = sol1.search(ms1);

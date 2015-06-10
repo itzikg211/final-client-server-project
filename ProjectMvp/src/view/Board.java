@@ -77,8 +77,7 @@ public class Board extends Composite
 				}
 			}
 		});
-
-		
+					
 	}
 	
 	 /**
@@ -118,6 +117,7 @@ public class Board extends Composite
     	tiles[mazeR-1][mazeC-1].setFinalImg(true);
 		layout();
 	}
+	
 	
 	 /**
 	   * This is the setHint method. 
@@ -369,21 +369,47 @@ public class Board extends Composite
 	
 	public void displaySolution(Solution s)
 	{
-		
 		ArrayList<Integer> arr = s.SolutionToArray();
 		int x=0;
 		int y=0;
-		int a=0;
-		int b=0;
+		int a=getX();
+		int b=getY();
 		System.out.println("SOLUTION : ");
+		s.displaySolution();
 		for(int i=3;i<arr.size();i+=2)
 		{
 			Image arrow;
 			y=arr.get(arr.size()-i);
 			x=arr.get(arr.size()-i-1);
-			System.out.println("A : " + a + " B : "+b);
-			System.out.println("X : " + x + " Y : "+y);
-			if(x == a+1) //direction is right
+			if(y == b-1 && x == a-1) //direction is up left
+			{
+				arrow = new Image(null, "resources/arrow-up-left.png"); 
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(y == b-1 && x == a+1) //direction is up right
+			{
+				arrow = new Image(null, "resources/arrow-down-left.png"); 
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(y == b+1 && x == a-1) //direction is down left
+			{
+				arrow = new Image(null, "resources/arrow-up-right.png"); 
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(y == b+1 && x == a+1) //direction is down right
+			{
+				arrow = new Image(null, "resources/arrow-down-right.png");
+				tiles[a][b].putArrow(arrow);
+				a=x;
+				b=y;
+			}
+			else if(x == a+1) //direction is right
 			{
 				arrow = new Image(null, "resources/arrow-down.png"); 
 				tiles[a][b].putArrow(arrow);
@@ -409,6 +435,7 @@ public class Board extends Composite
 				tiles[a][b].putArrow(arrow);
 				b=y;
 			}
+			
 			redraw();
 		}
 	}
