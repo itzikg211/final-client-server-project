@@ -1,8 +1,11 @@
 package model;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -53,6 +56,57 @@ public class MazeHandler implements ClientHandler
 				{
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
+					//in this part we are updating the names.txt file
+					BufferedReader reader1 = null;
+					try {
+						reader1 = new BufferedReader(new FileReader("names.txt"));
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String temp = "";
+					String line1 = "";
+					try 
+					{
+						while ((temp = reader1.readLine()) != null)
+						{
+							line1+=temp;
+						}
+					} 
+					catch (IOException e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						reader1.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					OutputStream out = null;
+					try {
+						out = new FileOutputStream(new File("names.txt"));
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					String str1 = line1 + "#" + str[2];
+					try {
+						out.write(str1.getBytes());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						out.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//sending the data to the client
 					compressObject(m.getSolution(),outToClient);
 					outToClient.flush();
 				}
@@ -76,7 +130,7 @@ public class MazeHandler implements ClientHandler
 		try 
 		{
 			reader.close();
-			System.out.println("finished communication with the clients");
+			System.out.println("finished communication with the client");
 		} catch (IOException e) 
 		{
 			e.printStackTrace();

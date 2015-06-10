@@ -260,6 +260,16 @@ public class MyModel extends Observable implements Model
 		else
 		{
 			//System.out.println("The hint maze is NOT null");
+			outToServer.println("solve maze"+ " " + mazeName);
+			outToServer.flush();
+			try 
+			{
+				expandSolution(myServer.getInputStream());
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 			outToServer.println("hint maze"+ " " + mazeName + " " + s);
 			outToServer.flush();
 			try 
@@ -382,14 +392,10 @@ public class MyModel extends Observable implements Model
 		try 
 		{
 			expandMaze(myServer.getInputStream());
-			//outToServer.println("hello");
-			//outToServer.flush();
 		} catch (IOException e1) 
 		{
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		//System.out.println("generated a maze");
 		
 	}
 
@@ -400,7 +406,6 @@ public class MyModel extends Observable implements Model
 	{
 		if(maze==null)
 		{
-			//System.out.println("No maze yet");
 			return null;
 		}
 		return maze;
@@ -417,10 +422,8 @@ public class MyModel extends Observable implements Model
 		} 
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//System.out.println("solved the maze "+ mazeName);
 	}
 
 	@Override
