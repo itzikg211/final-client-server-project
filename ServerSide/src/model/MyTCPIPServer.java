@@ -18,6 +18,7 @@ public class MyTCPIPServer
 	private boolean isStopped;
 	int id ;
 	ClientHandler ch;
+	ServerGUI server;
 	HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
 	public MyTCPIPServer(int port,ClientHandler ch) 
 	{
@@ -29,11 +30,18 @@ public class MyTCPIPServer
 	{
 		System.out.println("START SERVER");
 		ServerSocket myServer = null;
-
+		
 		try {
 			myServer = new ServerSocket(port);
 			myServer.setSoTimeout(50000);
 			ExecutorService executor = Executors.newFixedThreadPool(numOfClients);
+			executor.execute(new Runnable() {
+				@Override
+				public void run() {
+					server = new ServerGUI("server GUI", 500, 500);
+					server.run();
+				}
+			});
 			System.out.println("waiting for client");
 			try
 			{
@@ -42,7 +50,9 @@ public class MyTCPIPServer
 					final Socket someClient = myServer.accept();
 					System.out.println("Client number : " + id + " connected! ");
 					id++;
+					System.out.println("IP ADDRESS : " + someClient.getInetAddress());
 					clients.put(id, someClient);
+					server.setClients(clients);
 					executor.execute(new Runnable() 
 					{
 						

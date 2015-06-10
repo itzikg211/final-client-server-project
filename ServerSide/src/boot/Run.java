@@ -7,15 +7,18 @@ import java.io.IOException;
 import presenter.PropertiesServer;
 import model.MazeHandler;
 import model.MyTCPIPServer;
+import model.ServerGUI;
 
 public class Run 
 {
 
 	public static void main(String[] args) 
 	{
+		
+		System.out.println("GOOD");
 		PropertiesServer pro = readProperties();
 		MyTCPIPServer start = new MyTCPIPServer(pro.getPortNumber(),new MazeHandler());
-		start.startServer(pro.getNumOfClients());
+		start.startServer(pro.getNumOfClients() + 1);
 	}
 	
 	public static PropertiesServer readProperties()
