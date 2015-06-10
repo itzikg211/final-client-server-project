@@ -1,18 +1,13 @@
 package view;
 
 
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.gdip.PointF;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;

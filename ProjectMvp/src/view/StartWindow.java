@@ -30,8 +30,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
@@ -427,7 +429,7 @@ public class StartWindow extends BasicWindow implements View
 				//put the relevant string representing the current state here
 				if(sol2!=null)
 				{
-					sol2.displaySolution();
+					//sol2.displaySolution();
 					int size = sol2.getList().size();
 					int j = sol2.SolutionToArray().get(size*2-3);
 					int i = sol2.SolutionToArray().get(size*2-4);
@@ -527,6 +529,28 @@ public class StartWindow extends BasicWindow implements View
 		}
 	});
 		
+	shell.addListener(SWT.Close, new Listener() 
+	{
+	      public void handleEvent(Event event) 
+	      {
+				int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+				MessageBox mb = new MessageBox(shell,style);
+				mb.setMessage("Exit the game ?");
+				mb.setText("Confirm Exit");
+				int rc = mb.open();
+				switch(rc)
+				{
+				case SWT.YES:
+					setChanged();
+					notifyObservers("finish");
+					display.dispose();				
+				break;
+				case SWT.NO:
+					break;
+				}
+	      }
+    });
+	
 		
 		MessageBox m = new MessageBox(shell);
 		m.setText("You finished");
@@ -541,7 +565,21 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("Place : "+maze.getX()+","+maze.getY());
 				if(e.keyCode == SWT.ESC)
 				{
-					display.dispose ();
+					int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+					MessageBox mb = new MessageBox(shell,style);
+					mb.setMessage("Exit the game ?");
+					mb.setText("Confirm Exit");
+					int rc = mb.open();
+					switch(rc)
+					{
+					case SWT.YES:
+						setChanged();
+						notifyObservers("finish");
+						display.dispose();				
+					break;
+					case SWT.NO:
+						break;
+					}
 					
 				}
 				if(e.keyCode == SWT.ARROW_UP)
@@ -798,6 +836,10 @@ public class StartWindow extends BasicWindow implements View
 	{
 		sol2=sol;		
 	}
+	
+
+	
+
 
 	
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -14,6 +15,7 @@ import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import presenter.Properties;
 import algorithms.mazeGenerators.Maze;
@@ -38,9 +40,7 @@ public class MyModel extends Observable implements Model
 	private Properties pro;
 	private Socket myServer;
 	//private ObjectInputStream inFromServer;
-	private BufferedReader inFromServer;
 	private PrintWriter outToServer;
-	private BufferedReader inFromUser;
 	
 	 /**
 	   * This is the C'tor of MyModel. 
@@ -63,13 +63,16 @@ public class MyModel extends Observable implements Model
 			myServer = new Socket(pro.getIpAddr(),pro.getPortNumber());
 		} catch (UnknownHostException e) 
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) 
-		
+			System.out.println("unknown host! You should check if the server is even open...");
+			System.exit(0);
+			//e.printStackTrace();
+		} 
+		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Wrong I/O");
+			System.out.println("You should check if the server is even open...");
+			System.exit(0);
+			//e.printStackTrace();
 		}
 		try 
 		{
@@ -79,6 +82,16 @@ public class MyModel extends Observable implements Model
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		try 
+		{
+			compressObject(pro, myServer.getOutputStream());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	
+		
 		/*inFromServer = null;
 		try 
 		{
@@ -184,18 +197,69 @@ public class MyModel extends Observable implements Model
 		}
 	}*/
 	
+	
+	public void compressObject(Object objectToCompress, OutputStream outstream)
+	{
+		GZIPOutputStream gz = null;
+		try {
+			gz = new GZIPOutputStream(outstream);
+		} catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		ObjectOutputStream oos = null;
+		try {
+			oos = new ObjectOutputStream(gz);
+		} catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		try 
+		{
+			try 
+			{
+				oos.writeObject(objectToCompress);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+			try {
+				oos.flush();
+			} 
+			catch (IOException e) 
+			{
+				
+				e.printStackTrace();
+			}
+			}		
+		finally 
+		{
+	    try 
+	    {
+			gz.finish();
+		} 
+	    catch (IOException e) 
+	    {
+			e.printStackTrace();
+		}
+		}
+	}
+	
+	
+	
 	@Override
 	public Solution getSolution(String s) 
 	{
-		System.out.println("GETTING THE HINT SOLUTION");
+		//System.out.println("GETTING THE HINT SOLUTION");
 		if(maze==null)
 		{
-			System.out.println("The hint maze is null");
+			//System.out.println("The hint maze is null");
 			return null;
 		}
 		else
 		{
-			System.out.println("The hint maze is NOT null");
+			//System.out.println("The hint maze is NOT null");
 			outToServer.println("hint maze"+ " " + mazeName + " " + s);
 			outToServer.flush();
 			try 
@@ -218,7 +282,7 @@ public class MyModel extends Observable implements Model
 		
 		if(sol==null)
 		{
-			System.out.println("No solution yet");
+			//System.out.println("No solution yet");
 			return null;
 		}
 		return sol;
@@ -259,18 +323,6 @@ public class MyModel extends Observable implements Model
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-			   finally 
-			   {
-			   /* try 
-			    {
-					gs.close();
-					ois.close();
-				} catch (IOException e) 
-			    {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
-			   }
 	  }
 	 public void expandSolution(InputStream instream)
 	 {
@@ -307,7 +359,7 @@ public class MyModel extends Observable implements Model
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-			   finally 
+			  /* finally 
 			   {
 			    try 
 			    {
@@ -318,7 +370,7 @@ public class MyModel extends Observable implements Model
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			   }
+			   }*/
 	  }
 	
 	
@@ -337,7 +389,7 @@ public class MyModel extends Observable implements Model
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		System.out.println("generated a maze");
+		//System.out.println("generated a maze");
 		
 	}
 
@@ -348,7 +400,7 @@ public class MyModel extends Observable implements Model
 	{
 		if(maze==null)
 		{
-			System.out.println("No maze yet");
+			//System.out.println("No maze yet");
 			return null;
 		}
 		return maze;
@@ -368,7 +420,7 @@ public class MyModel extends Observable implements Model
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("solved the maze "+ mazeName);
+		//System.out.println("solved the maze "+ mazeName);
 	}
 
 	@Override
@@ -395,9 +447,9 @@ public class MyModel extends Observable implements Model
 		outToServer.flush();
 		System.out.println("stop");
 		try {
-			inFromServer.close();
-			inFromUser.close();
-			outToServer.close();
+			//inFromServer.close();
+			//inFromUser.close();
+			//outToServer.close();
 			myServer.close();
 		} 
 		catch (IOException e) 

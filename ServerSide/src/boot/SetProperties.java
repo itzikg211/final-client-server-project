@@ -4,7 +4,7 @@ import java.beans.XMLEncoder;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import presenter.Properties;
+import presenter.PropertiesServer;
 
 public class SetProperties 
 {
@@ -12,7 +12,7 @@ public class SetProperties
 	public static void main(String[] args) 
 	{
 			XMLEncoder e;
-			Properties pro=new Properties();
+			PropertiesServer pro=new PropertiesServer();
 			try 
 			{
 				

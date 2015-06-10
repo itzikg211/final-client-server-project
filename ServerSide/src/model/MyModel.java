@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import presenter.Properties;
+import presenter.PropertiesServer;
 import algorithms.demo.MazeSearch;
 import algorithms.mazeGenerators.DFSMazeGenerator;
 import algorithms.mazeGenerators.Maze;
@@ -44,7 +44,7 @@ public class MyModel extends Observable implements Model
 	private Solution sol;
 	private String MazeName;
 	private HashMap<String,HashMap<Maze, Solution>> msols;
-	private Properties pro;
+	private PropertiesServer pro;
 	
 	 /**
 	   * This is the C'tor of MyModel. 
@@ -54,7 +54,7 @@ public class MyModel extends Observable implements Model
 	   * @return Nothing.
 	   */
 	
-	public MyModel(Properties pro) 
+	public MyModel(PropertiesServer pro) 
 	{
 		//Initialize the threadpool.
 		this.pro = pro;

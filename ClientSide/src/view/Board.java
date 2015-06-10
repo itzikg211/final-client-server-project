@@ -1,18 +1,13 @@
 package view;
 
 
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.gdip.PointF;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -33,7 +28,6 @@ import algorithms.search.Solution;
 
 public class Board extends Composite
 {
-	//those are the Board variables
 	int mazeR;
 	int mazeC;
 	Tile[][] tiles;
@@ -76,7 +70,7 @@ public class Board extends Composite
 				}
 				if(tiles==null){
 					int width=(int)(parent.getSize().x*0.80);
-					int height=(int)(parent.getSize().y*0.9);
+					int height=(int)(parent.getSize().y*0.88);
 					ImageData data = new ImageData("resources/mainPic.png");
 					arg0.gc.drawImage(new Image(getDisplay(),"resources/mainPic.png"),0,0,data.width,data.height,0,0,width, height);
 				}
@@ -120,7 +114,6 @@ public class Board extends Composite
 				tiles[i][j].setBeforeImage(temp);
 			}
     	tiles[0][0].setFirstTile(true);
-    	tiles[mazeR-1][mazeC-1].setFinalImg(true);
 		layout();
 	}
 	
@@ -167,10 +160,6 @@ public class Board extends Composite
 		
 		if(tiles[i][j].isCircle())
 		{
-			if((i==1 && j==0) || (i==0 && j==1))
-			{
-				tiles[0][0].removeCircle();
-			}
 			System.out.println(i + "," + j + " has circle");
 			tiles[i][j].removeCircle();
 		}
@@ -196,7 +185,7 @@ public class Board extends Composite
 	
 	public boolean canMove(int i,int j,int dir)
 	{
-		tiles[0][0].redraw();
+		//tiles[0][0].redraw();
 		boatI = i;
 		boatJ = j;
 		System.out.println();
@@ -374,13 +363,13 @@ public class Board extends Composite
 	
 	public void displaySolution(Solution s)
 	{
-		
 		ArrayList<Integer> arr = s.SolutionToArray();
 		int x=0;
 		int y=0;
-		int a=0;
-		int b=0;
+		int a=getX();
+		int b=getY();
 		System.out.println("SOLUTION : ");
+		s.displaySolution();
 		for(int i=3;i<arr.size();i+=2)
 		{
 			Image arrow;
@@ -417,30 +406,9 @@ public class Board extends Composite
 			redraw();
 		}
 	}
-	
-	 /**
-	   * This is the setAllHintsToFalse method. 
-	   * <p>The thing it does is setting up all the hints to be false by redrawing them.
-	   * @param x <b>(int) </b>This is the first parameter to the displaySolution method
-	   * @param y <b>(int) </b>This is the second parameter to the displaySolution method
-	   * @return Nothing.
-	   */
-	
-	public void setAllHintsToFalse(int x,int y)
-	{
-		for(int i=0;i<tiles.length;i++)
-			for(int j=0;j<tiles[0].length;j++)
-			{
-				if(i!=x && j!= y)
-				{
-					tiles[i][j].removeHint();
-					tiles[i][j].redraw();
-				}
-			}
-	}
 
 	/////All the getters and setters.
-
+	
 	public void setX(int a)
 	{
 		this.boatI=a;

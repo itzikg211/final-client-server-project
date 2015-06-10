@@ -22,7 +22,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -30,8 +29,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
@@ -60,6 +61,7 @@ public class StartWindow extends BasicWindow implements View
 	Solution sol2;
 	Boat b;
 	boolean solvedAlready = false;
+	boolean hasWonForMusic;
 	/**
 	 * Constructs the start window 
 	 * @param title the title of the start window
@@ -243,7 +245,27 @@ public class StartWindow extends BasicWindow implements View
 			}
 		});
 		
-		
+		shell.addListener(SWT.Close, new Listener() 
+		{
+		      public void handleEvent(Event event) 
+		      {
+					int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+					MessageBox mb = new MessageBox(shell,style);
+					mb.setMessage("Exit the game ?");
+					mb.setText("Confirm Exit");
+					int rc = mb.open();
+					switch(rc)
+					{
+					case SWT.YES:
+						setChanged();
+						notifyObservers("finish");
+						display.dispose();				
+					break;
+					case SWT.NO:
+						break;
+					}
+		      }
+	    });
 		
 		/**
 		 * handles the selected number of colons
@@ -355,7 +377,7 @@ public class StartWindow extends BasicWindow implements View
 							}
 							
 							
-						if(names!=null)
+						if(names.length==0)
 						{
 							for(String s: names)
 							{
@@ -374,7 +396,9 @@ public class StartWindow extends BasicWindow implements View
 						}
 						if(flag == true)
 						{
+							maze.redraw();
 							solvedAlready = false;
+							hasWonForMusic = false;
 							maze.setX(0);
 							maze.setY(0);
 							//myMaze = new DFSMazeGenerator().generateMaze(numR, numC);
@@ -458,7 +482,12 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("solving the maze " + t.getText());
 				String send = "gui solve maze ";
 				send += t.getText();
-				
+				int x =  maze.getX()+1;
+				int y = maze.getY()+1;
+				String add = " " + x + " " + y;
+				send += add;
+				System.out.println("POSITION OF THE BOAT : " + maze.getX() +","+maze.getY());
+				System.out.println("SEND : " + send);
 				if(solvedAlready == false)
 				{
 					setChanged();
@@ -473,12 +502,14 @@ public class StartWindow extends BasicWindow implements View
 						
 						maze.displaySolution(sol);
 						maze.forceFocus();
+						solvedAlready = true;
 					}
-					solvedAlready = true;
 				}
 				else
 				{
-					maze.displaySolution(sol);
+					MessageBox mb = new MessageBox(shell);
+					mb.setMessage("You already solved the maze");
+					mb.open();
 					maze.forceFocus();
 				}
 			}
@@ -541,8 +572,22 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("Place : "+maze.getX()+","+maze.getY());
 				if(e.keyCode == SWT.ESC)
 				{
-					display.dispose ();
+					int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+					MessageBox mb = new MessageBox(shell,style);
+					mb.setMessage("Exit the game ?");
+					mb.setText("Confirm Exit");
+					int rc = mb.open();
+					switch(rc)
+					{
+					case SWT.YES:
+						setChanged();
+						notifyObservers("finish");
+						display.dispose();				
+					break;
+					case SWT.NO:
+						break;
 					
+					}
 				}
 				if(e.keyCode == SWT.ARROW_UP)
 				{
@@ -600,27 +645,32 @@ public class StartWindow extends BasicWindow implements View
 			}
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if(maze.getX()==maze.mazeR-1 & maze.getY()==maze.mazeC-1)
+				if(!hasWonForMusic)
 				{
-					File file = new File("resources/music/winnerMusic.wav");
-					AudioInputStream stream;
-					Clip clip;
-					try 
+					if(maze.getX()==maze.mazeR-1 & maze.getY()==maze.mazeC-1)
 					{
-						
-					    stream = AudioSystem.getAudioInputStream(file);
-					    clip = AudioSystem.getClip();
-					    clip.open(stream);
-					    clip.start();
-					  
+						File file = new File("resources/music/winnerMusic.wav");
+						AudioInputStream stream;
+						Clip clip;
+						try 
+						{
+							
+						    stream = AudioSystem.getAudioInputStream(file);
+						    clip = AudioSystem.getClip();
+						    clip.open(stream);
+						    clip.start();
+						    hasWonForMusic = true;
+						  
+						}
+						catch (Exception ex) 
+						{
+						    ex.printStackTrace();
+						}
+						System.out.println("FINISHED!");
+						m.setMessage("Congrats! you finished the maze!");
+						m.open();
 					}
-					catch (Exception ex) 
-					{
-					    ex.printStackTrace();
-					}
-					System.out.println("FINISHED!");
-					m.setMessage("Congrats! you finished the maze!");
-					m.open();
+				
 				}
 			}
 			
@@ -642,8 +692,6 @@ public class StartWindow extends BasicWindow implements View
 				switch(rc)
 				{
 				case SWT.YES:
-					setChanged();
-					notifyObservers("finish");
 					display.dispose();				
 				break;
 				case SWT.NO:

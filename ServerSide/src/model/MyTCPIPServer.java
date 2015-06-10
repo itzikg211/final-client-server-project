@@ -47,8 +47,8 @@ public class MyTCPIPServer
 							try 
 							{
 								ch.handleClient(someClient.getInputStream(),someClient.getOutputStream());			
-								someClient.getOutputStream().close();
-								someClient.getInputStream().close();
+								//someClient.getOutputStream().close();
+								//someClient.getInputStream().close();
 								someClient.close();
 							} 
 							catch (IOException e) 

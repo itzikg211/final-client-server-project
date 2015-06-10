@@ -1,6 +1,10 @@
 package presenter;
 
 import java.io.Serializable;
+
+import presenter.Properties.MazeGenerator;
+import presenter.Properties.MazeSolver;
+import presenter.Properties.WayOfDisplay;
 /**
  * This class job is to manage the user's selected properties.
  * 
@@ -8,7 +12,7 @@ import java.io.Serializable;
  * @version 1.0
  * @since   2015-05-19 
  */
-public class Properties implements Serializable {
+public class PropertiesServer implements Serializable {
 	/**
 	 * 
 	 */
@@ -16,19 +20,19 @@ public class Properties implements Serializable {
 	/**
 	 * enums to match the users' selscetion
 	 */
-	public static enum MazeGenerator 
+	/*public enum MazeGenerator 
 	{
 		DFS_ALGO,RANDOM_ALGO
 	};
 	
-	public static enum MazeSolver 
+	public enum MazeSolver 
 	{
 		ASTAR_MANHATTAN_DISTANCE,ASTAR_AIR_DISTANCE,BFS_DIAGONAL,BFS_NO_DIAGONAL
 	};
-	public static enum WayOfDisplay
+	public enum WayOfDisplay
 	{
 		GUI,ECLIPSE_CONSOLE
-	};
+	};*/
 	private int threadNumber;
 	private MazeSolver mazeSolver;
 	private MazeGenerator mazeGenerator;
@@ -36,12 +40,12 @@ public class Properties implements Serializable {
 	private double regCost;
 	private double diagonalCost;
 	private WayOfDisplay view;
-	private String IpAddr;
 	private int portNumber;
+	private int numOfClients;
 	/**
 	 * Constructs the class PropertiesServer and intializes the basic Settings
 	 */
-	public Properties()
+	public PropertiesServer()
 	{
 		this.threadNumber=10;
 		this.mazeSolver=MazeSolver.ASTAR_MANHATTAN_DISTANCE;
@@ -50,14 +54,14 @@ public class Properties implements Serializable {
 		this.regCost=10;
 		this.diagonalCost=15;
 		this.view = WayOfDisplay.GUI;
-		this.IpAddr = "127.0.0.1";
 		this.portNumber = 5040;
+		this.numOfClients = 10;
 	}
 	/**
 	 * Constructs the class PropertiesServer and intializes the class with the injected fiels
 	 * 
 	 */
-	public Properties(MazeSolver mazeSolver,int threadNumber,MazeGenerator mazeGenerator, Boolean diagonal,double regCost,double diagonalCost)
+	public PropertiesServer(MazeSolver mazeSolver,int threadNumber,MazeGenerator mazeGenerator, Boolean diagonal,double regCost,double diagonalCost,int portNumber,int numOfClients)
 	{
 		this.threadNumber=threadNumber;
 		this.mazeSolver=mazeSolver;
@@ -65,6 +69,8 @@ public class Properties implements Serializable {
 		this.diagonal=diagonal;
 		this.regCost=regCost;
 		this.diagonalCost=diagonalCost;
+		this.portNumber = portNumber;
+		this.numOfClients = numOfClients;
 	}
 	/**
 	 * 
@@ -175,15 +181,8 @@ public class Properties implements Serializable {
 	{
 		this.view = view;
 	}
-	public String getIpAddr() 
-	{
-		return IpAddr;
-	}
-	public void setIpAddr(String ipAddr) 
-	{
-		IpAddr = ipAddr;
-	}
-	public int getPortNumber()
+
+	public int getPortNumber() 
 	{
 		return portNumber;
 	}
@@ -191,7 +190,12 @@ public class Properties implements Serializable {
 	{
 		this.portNumber = portNumber;
 	}
-	
-	
-	
+	public int getNumOfClients() 
+	{
+		return numOfClients;
+	}
+	public void setNumOfClients(int numOfClients) 
+	{
+		this.numOfClients = numOfClients;
+	}
 }
