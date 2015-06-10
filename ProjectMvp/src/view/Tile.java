@@ -27,8 +27,8 @@ public class Tile extends Canvas
 {
 	private Image beforeImage;
 	private Image tileImg;
-	private int clickI,clickJ;
-	private int a,b,temp1,temp2;
+	private int clickI,clickJ,unclickI,unclickJ;
+	private int a,b,temp1,temp2,mouseDir;
 	private Image arrowImage;
 	private Boat boat;
 	private Image boatImg;
@@ -36,9 +36,7 @@ public class Tile extends Canvas
 	private boolean hint = false;
 	private boolean circle = false;
 	private boolean finalImg = false;
-
-
-
+	int width,height;
 
 	/**
 	 * Constructs and initializes the class Tile
@@ -51,8 +49,8 @@ public class Tile extends Canvas
 			@Override
 			public void paintControl(PaintEvent e) 
 			{
-					int width=getSize().x;
-					int height=getSize().y;
+					width=getSize().x;
+					height=getSize().y;
 			        ImageData data = tileImg.getImageData();
 			        e.gc.drawImage(tileImg,0,0,data.width,data.height,temp1,temp2,width,height);
 			        if(hint)
@@ -100,14 +98,49 @@ public class Tile extends Canvas
 				// TODO Auto-generated method stub
 				int a = getDisplay().getCursorLocation().x;
 				int b = getDisplay().getCursorLocation().y;
+				unclickI = a;
+				unclickJ = b;
 				String pos = "leave position : " + a + "," + b;
 				System.out.println(pos);
 				if(a==clickI && b==clickJ)
 				{
 					System.out.println("mouse didnt move!");
 				}
+				double sl =  (double)(clickJ-unclickJ)/(double)(clickI-unclickI);
+				System.out.println("THE SLOPE IS : " + sl);
+				if(clickJ < unclickJ )
+				{
+					if((sl > 2.5) || (sl < -2.5 )) //down
+					{
+						mouseDir = 2;
+						//System.out.println("Dir is DOWN");
+					}
+				}
+				if(clickJ > unclickJ )
+				{
+					if((sl > 2.5) || (sl < -2.5 )) //up
+					{
+						mouseDir = 0;
+						//System.out.println("Dir is UP");
+					}
+				}
+				if(clickI < unclickI )
+				{
+					if((sl < 0.5) && (sl > -0.5 )) //right
+					{
+						mouseDir = 1;
+						//System.out.println("Dir is RIGHT");
+					}
+				}
+				if(clickI > unclickI )
+				{
+					if((sl < 0.5) && (sl > -0.5 )) //left
+					{
+						mouseDir = 3;
+						//System.out.println("Dir is LEFT");
+					}
+				}
 			}
-			
 			@Override
 			public void mouseDown(MouseEvent arg0) { //when you press the mouse
 				// TODO Auto-generated method stub

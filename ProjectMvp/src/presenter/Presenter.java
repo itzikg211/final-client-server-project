@@ -176,7 +176,10 @@ public class Presenter implements Observer{
 					System.out.println("Doing gui solve maze command");
 					String[] sw = str.split(" ");
 					String name = sw[3];
-					Solution s = setGuiSolution(name);
+					int i = Integer.parseInt(sw[4]);
+					int j = Integer.parseInt(sw[5]);
+					String send = i+","+j;
+					Solution s = setGuiSolution(name,i,j);
 					v.setSolution(s);
 				}
 				else
@@ -248,14 +251,16 @@ public class Presenter implements Observer{
 	 * @param name the name of the maze
 	 * @return returns the selected maze that matches the maze's name
 	 */
-	public Solution setGuiSolution(String name)
+	public Solution setGuiSolution(String name,int i,int j)
 	{
 		if(mazes.containsKey(name))
 		{
+			//m.setName(name);
+			//m.solveMaze(mazes.get(name));
+			//System.out.println("Solution for " + name + " is ready!");	
+			String loc = i +"," + j;
 			m.setName(name);
-			m.solveMaze(mazes.get(name));
-			System.out.println("Solution for " + name + " is ready!");	
-			return m.getSolution();
+			return m.getSolution(loc);
 		}
 		return null;
 	}
