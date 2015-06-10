@@ -643,7 +643,54 @@ public class StartWindow extends BasicWindow implements View
 					System.out.println("CAN NOT MOVE");
 				
 			}
-			
+			if(e.keyCode == SWT.KEYPAD_7)
+			{
+				System.out.println("UP-LEFT");
+				if(maze.canMove(maze.getX(),maze.getY(), 4))
+				{
+					System.out.println("CAN MOVE");
+					maze.setDir(3);
+					maze.setBoatPosition(maze.getX()-1,maze.getY()-1);						
+				}
+				else
+					System.out.println("CAN NOT MOVE");
+			}
+			if(e.keyCode == SWT.KEYPAD_9)
+			{
+				System.out.println("UP-RIGHT");
+				if(maze.canMove(maze.getX(),maze.getY(), 5))
+				{
+					System.out.println("CAN MOVE");
+					maze.setDir(1);
+					maze.setBoatPosition(maze.getX()-1,maze.getY()+1);						
+				}
+				else
+					System.out.println("CAN NOT MOVE");
+			}
+			if(e.keyCode == SWT.KEYPAD_1)
+			{
+				System.out.println("DOWN-LEFT");
+				if(maze.canMove(maze.getX(),maze.getY(), 6))
+				{
+					System.out.println("CAN MOVE");
+					maze.setDir(3);
+					maze.setBoatPosition(maze.getX()+1,maze.getY()-1);						
+				}
+				else
+					System.out.println("CAN NOT MOVE");
+			}
+			if(e.keyCode == SWT.KEYPAD_3)
+			{
+				System.out.println("DOWN-RIGHT");
+				if(maze.canMove(maze.getX(),maze.getY(), 7))
+				{
+					System.out.println("CAN MOVE");
+					maze.setDir(1);
+					maze.setBoatPosition(maze.getX()+1,maze.getY()+1);						
+				}
+				else
+					System.out.println("CAN NOT MOVE");
+			}
 			
 			}
 			@Override
@@ -788,7 +835,8 @@ public class StartWindow extends BasicWindow implements View
 			public void widgetSelected(SelectionEvent arg0) 
 			{
 				MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION);
-			    messageBox.setMessage("Move the Boat using the arrows keys or by dragging the boat.\nYou may set the properties as you like by loading an xml file. Enjoy!");
+			    messageBox.setMessage("Move the Boat using the arrows keys or by dragging the boat.\nYou may set the properties as you like by loading an xml file or just set them up at the beginning, before the game. If you wish to "
+			    		+ "move in diagonals you may use the number keys(1,3,7,9) Enjoy!");
 			    messageBox.setText("Information");
 			    messageBox.open();
 

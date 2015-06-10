@@ -251,6 +251,62 @@ public class Board extends Composite
 				return false;
 			}
 		}
+		//4 means up-left
+		if(dir==4)
+		{
+			if(j==0 || i==0)
+			{
+				return false;
+			}
+			else
+			{
+				if((this.m.getCell(i, j-1).getHasLeftWall()==false && this.m.getCell(i-1, j-1).getHasBottomWall()==false ) || (this.m.getCell(i-1, j-1).getHasLeftWall()==false && this.m.getCell(i-1, j).getHasBottomWall()==false ))
+					return true;
+				return false;
+			}
+		}
+		//5 means up-right
+		if(dir==5)
+		{
+			if(i==0 || j==this.m.getCols()-1)
+			{
+				return false;
+			}
+			else
+			{
+				if((this.m.getCell(i,j).getHasLeftWall()==false && this.m.getCell(i-1, j+1).getHasBottomWall()==false ) || (this.m.getCell(i-1, j).getHasLeftWall()==false && this.m.getCell(i-1, j).getHasBottomWall()==false ))
+					return true;
+				return false;
+			}
+		}
+		//6 means down-left
+		if(dir==6)
+		{
+			if(j==0 || i==this.m.getRows()-1)
+			{
+				return false;
+			}
+			else
+			{
+				if((this.m.getCell(i, j-1).getHasLeftWall()==false && this.m.getCell(i, j-1).getHasBottomWall()==false ) || (this.m.getCell(i+1, j-1).getHasLeftWall()==false && this.m.getCell(i, j).getHasBottomWall()==false ))
+					return true;
+				return false;
+			}
+		}
+		//7 means down-right
+		if(dir==7)
+		{
+			if(j==this.m.getCols()-1 || i==this.m.getRows()-1)
+			{
+				return false;
+			}
+			else
+			{
+				if((this.m.getCell(i, j).getHasLeftWall()==false && this.m.getCell(i, j+1).getHasBottomWall()==false ) || (this.m.getCell(i+1, j).getHasLeftWall()==false && this.m.getCell(i, j).getHasBottomWall()==false ))
+					return true;
+				return false;
+			}
+		}
 		return false;
 
 	}

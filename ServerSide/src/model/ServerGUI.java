@@ -9,7 +9,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
-public class ServerGUI extends BasicWindow{
+public class ServerGUI extends BasicWindow
+{
 	List IdList;
 	List IpList;
 	public ServerGUI(String title, int width, int height) {

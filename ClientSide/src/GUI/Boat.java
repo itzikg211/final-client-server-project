@@ -37,7 +37,7 @@ public class Boat
 		{
 			x=i+1;
 			y=j;
-			image2 = new Image(null, "resources/boat-up.jpg");
+			image2 = new Image(null, "resources/boat-up.png");
 			//setBoatImg(image2);
 			
 		}
@@ -45,14 +45,14 @@ public class Boat
 		{
 			x=i;
 			y=j-1;
-			image2 = new Image(null, "resources/boat-right.jpg");
+			image2 = new Image(null, "resources/boat-right.png");
 			//setBoatImg(image2);
 		}
 		if(dir==2)
 		{
 			x=i-1;
 			y=j;
-			image2 = new Image(null, "resources/boat-down.jpg");
+			image2 = new Image(null, "resources/boat-down.png");//jpg");//////////////changed here
 			//setBoatImg(image2);
 			
 		}
@@ -60,7 +60,7 @@ public class Boat
 		{
 			x=i;
 			y=j+1;
-			image2 = new Image(null, "resources/boat-left.jpg");
+			image2 = new Image(null, "resources/boat-left.png");
 			//setBoatImg(image2);
 		}
 		return image2;

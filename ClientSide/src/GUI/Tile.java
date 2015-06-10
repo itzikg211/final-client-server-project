@@ -62,9 +62,9 @@ public class Tile extends Canvas
 			        }
 			        if(firstTile)
 			        {
-			        	setBoatImage(new Image(null, "resources/boat-right.jpg"));
-			        	ImageData data1 = new Image(null, "resources/boat-right.jpg").getImageData();
-			        	e.gc.drawImage(new Image(null, "resources/boat-right.jpg"),0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));
+			        	setBoatImage(new Image(null, "resources/boat-right.png"));
+			        	ImageData data1 = new Image(null, "resources/boat-right.png").getImageData();
+			        	e.gc.drawImage(new Image(null, "resources/boat-right.png"),0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));
 			        }
 			        if(circle == true)
 			        {

@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.eclipse.swt.widgets.Display;
+
 public class MyTCPIPServer 
 {
 	private int port;
@@ -35,7 +37,7 @@ public class MyTCPIPServer
 			myServer = new ServerSocket(port);
 			myServer.setSoTimeout(50000);
 			ExecutorService executor = Executors.newFixedThreadPool(numOfClients);
-			executor.execute(new Runnable() {
+			Display.getDefault().syncExec(new Runnable() {
 				@Override
 				public void run() {
 					server = new ServerGUI("server GUI", 500, 500);
