@@ -4,8 +4,8 @@ import java.beans.XMLDecoder;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import GUI.GUIStart;
 import presenter.Properties;
-import view.GUIStart;
 
 ///////Submitted by: Sarusi Ran 208631143, Gershfeld Itzik 208491886
 

@@ -1,4 +1,4 @@
-package view;
+package GUI;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -41,6 +41,9 @@ import org.eclipse.swt.widgets.Text;
 import presenter.Presenter;
 import presenter.Properties;
 import presenter.Properties.WayOfDisplay;
+import view.Command;
+import view.MyView;
+import view.View;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.Solution;
 /**

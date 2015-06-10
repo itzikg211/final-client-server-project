@@ -1,4 +1,4 @@
-package view;
+package GUI;
 
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
