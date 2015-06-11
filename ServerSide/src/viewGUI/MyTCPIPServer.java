@@ -45,7 +45,6 @@ public class MyTCPIPServer
 				while(!isStopped)
 				{
 					final Socket someClient = myServer.accept();
-					connectMVP(someClient);
 					System.out.println("Client number : " + id + " connected! ");
 					id++;
 					System.out.println("IP ADDRESS : " + someClient.getInetAddress());
@@ -60,6 +59,7 @@ public class MyTCPIPServer
 							// TODO Auto-generated method stub
 							try 
 							{
+								connectMVP(someClient);
 								ch.handleClient(someClient.getInputStream(),someClient.getOutputStream());			
 								//someClient.getOutputStream().close();
 								//someClient.getInputStream().close();

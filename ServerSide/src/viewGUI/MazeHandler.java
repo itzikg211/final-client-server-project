@@ -19,20 +19,9 @@ public class MazeHandler extends CommonClientHandler
 		{
 			while(!(line = reader.readLine()).equals("exit"))
 			{
-				if(counter == 2)
-				{
-					System.out.println(line);
-					setChanged();
-					notifyObservers(line);
-					counter++;
-				}
-				else
-				{
 					System.out.println(line);
 					setChanged();
 					notifyObservers(line);	
-					counter++;
-				}
 			}
 		} 
 		catch (IOException e) 
