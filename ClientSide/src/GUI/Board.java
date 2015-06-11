@@ -53,7 +53,7 @@ public class Board extends Composite
 	{
 		super(parent, style);
 		
-		b = new Boat();
+		b = new Boat(this);
 		this.boatI=0;
 		this.boatJ=0;
 		addPaintListener(new PaintListener() 
@@ -66,7 +66,10 @@ public class Board extends Composite
 				{
 					for(int i=0;i<tiles.length;i++)
 						for(int j=0;j<tiles[0].length;j++)
+						{
+							tiles[i][j].setBoat(b);
 							tiles[i][j].redraw();
+						}
 				}
 				if(tiles==null){
 					int width=(int)(parent.getSize().x*0.80);
