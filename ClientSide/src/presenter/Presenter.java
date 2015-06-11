@@ -92,7 +92,7 @@ public class Presenter implements Observer
 			Maze maze = mazes.get(command);
 			m.solveMaze(maze);
 			System.out.println("Solution for " + command + " is ready!");			
-			BufferedReader reader = new BufferedReader(new FileReader("names.txt"));
+			/*BufferedReader reader = new BufferedReader(new FileReader("names.txt"));
 			String temp = "";
 			String line = "";
 			try 
@@ -112,7 +112,7 @@ public class Presenter implements Observer
 			OutputStream out = new FileOutputStream(new File("names.txt"));
 			String str = line + "#" + ints[0];
 			out.write(str.getBytes());
-			out.close();
+			out.close();*/
 		}		
 	}
 	/**
@@ -281,7 +281,7 @@ public class Presenter implements Observer
 		mazes.put(name, maze);
 		
 		System.out.println("Solution for " + command + " is ready!");			
-		BufferedReader reader = null;
+		/*BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader("names.txt"));
 		} catch (FileNotFoundException e1) {
@@ -328,7 +328,7 @@ public class Presenter implements Observer
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		return maze;
 	}

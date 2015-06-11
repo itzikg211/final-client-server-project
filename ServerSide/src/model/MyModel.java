@@ -1,13 +1,12 @@
 package model;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -15,6 +14,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 
 import presenter.PropertiesServer;
 import algorithms.demo.MazeSearch;
@@ -61,7 +65,7 @@ public class MyModel extends Observable implements Model
 		executor=Executors.newFixedThreadPool(pro.getThreadNumber());
 		msols = new HashMap<String, HashMap<Maze,Solution>>();
 		//getting all the data from the database.
-       /* Configuration configuration = new Configuration();
+        Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
         StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
@@ -69,43 +73,39 @@ public class MyModel extends Observable implements Model
 		session.beginTransaction();
 		MazeSolutionHibernate ms = new MazeSolutionHibernate();
 		String [] names = null;
-		try 
+		@SuppressWarnings("unchecked")
+		List<MazeSolutionHibernate> allList = session.createQuery("from model.MazeSolutionHibernate").list();
+		Iterator<MazeSolutionHibernate> itr = allList.iterator();
+		MazeSolutionHibernate msh;
+		while(itr.hasNext())
 		{
-			BufferedReader reader = new BufferedReader(new FileReader("names.txt"));
-			String line;
-			try 
-			{
-				while ((line = reader.readLine()) != null)
-				{
-					names = line.split("#");
-				}
-			} 
-			catch (IOException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(names!=null)
-			{
+			msh = itr.next();
+			HashMap<Maze, Solution> temp = new HashMap<Maze, Solution>();
+			temp.put(msh.stringToMaze(msh.getMaze()), msh.stringToSolution(msh.getSol()));
+			msols.put(msh.getId(), temp);
+			
+		}
+		System.out.println("finished receiving data from DB");
+		session.close();
+		
+	}
+			//if(names!=null)
+			//{
 				
-				for(int i=1;i<names.length;i++)
+				/*for(String name : idList)//for(int i=1;i<names.length;i++)
 				{
-					ms = (MazeSolutionHibernate) session.get(MazeSolutionHibernate.class,names[i]);
+					ms = (MazeSolutionHibernate) session.get(MazeSolutionHibernate.class,name);
 					HashMap<Maze, Solution> temp = new HashMap<Maze, Solution>();
 					temp.put(ms.stringToMaze(ms.getMaze()), ms.stringToSolution(ms.getSol()));
 					msols.put(ms.getId(), temp);
-					
 				}
-			}
+			//}
 		} 
 		catch (FileNotFoundException e) 
 		{
 			e.printStackTrace();
-		}
+		}*/
 		//System.out.println(ms.getId()+" "+ms.getMaze()+" "+ms.getSol());
-		
-		session.close();*/
-	}
 	
 	 /**
 	   * This method generates a (rows * cols) size maze .
@@ -117,48 +117,29 @@ public class MyModel extends Observable implements Model
 	@Override
 	public void generateMaze(int rows, int cols) 
 	{
-		
-		switch(pro.getMazeGenerator()) 
+		if(msols.containsKey(MazeName))//maze name already in the database
 		{
-		case DFS_ALGO:
-			Future<Maze> future = executor.submit(new Callable<Maze>()
-					{
-	            @Override
-	            public Maze call() throws Exception 
-	            {
-	    			MazeGenerator mg=new DFSMazeGenerator();
-	    			maze = mg.generateMaze(rows,cols);
-	    			return maze;
-	             }
-	             });
-			notifyObservers("Genrate completed");
-			try 
+			maze = msols.get(MazeName).keySet().iterator().next();
+		}
+		else
+		{
+			switch(pro.getMazeGenerator()) 
 			{
-				Maze temp = future.get();
-			} 
-			catch (InterruptedException e) 
-			{
-				e.printStackTrace();
-			} catch (ExecutionException e) 
-			{
-				e.printStackTrace();
-			}
-			break;
-		case RANDOM_ALGO:
-			Future<Maze> future1 = executor.submit(new Callable<Maze>()
-					{
-	            @Override
-	            public Maze call() throws Exception 
-	            {
-	    			MazeGenerator mg=new RandomMazeGenerator();
-	    			maze = mg.generateMaze(rows,cols);
-	    			return maze;
-	             }
-	             });
+			case DFS_ALGO:
+				Future<Maze> future = executor.submit(new Callable<Maze>()
+						{
+		            @Override
+		            public Maze call() throws Exception 
+		            {
+		    			MazeGenerator mg=new DFSMazeGenerator();
+		    			maze = mg.generateMaze(rows,cols);
+		    			return maze;
+		             }
+		             });
 				notifyObservers("Genrate completed");
 				try 
 				{
-					Maze temp = future1.get();
+					Maze temp = future.get();
 				} 
 				catch (InterruptedException e) 
 				{
@@ -167,11 +148,35 @@ public class MyModel extends Observable implements Model
 				{
 					e.printStackTrace();
 				}
-			break;
-		default:
-			break;
+				break;
+			case RANDOM_ALGO:
+				Future<Maze> future1 = executor.submit(new Callable<Maze>()
+						{
+		            @Override
+		            public Maze call() throws Exception 
+		            {
+		    			MazeGenerator mg=new RandomMazeGenerator();
+		    			maze = mg.generateMaze(rows,cols);
+		    			return maze;
+		             }
+		             });
+					notifyObservers("Genrate completed");
+					try 
+					{
+						Maze temp = future1.get();
+					} 
+					catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					} catch (ExecutionException e) 
+					{
+						e.printStackTrace();
+					}
+				break;
+			default:
+				break;
+			}
 		}
-		
 		
 		
 	}
@@ -292,21 +297,21 @@ public class MyModel extends Observable implements Model
 			}
 			/////here we communicate with the database
 			
-			/*Configuration configuration = new Configuration();
+			Configuration configuration = new Configuration();
 			configuration.configure("hibernate.cfg.xml");
 			StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
 			SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
 			Session session = sessionFactory.openSession();
 			session.beginTransaction();
-			MazeSolutionHibernate msh = new MazeSolutionHibernate();*/
+			MazeSolutionHibernate msh = new MazeSolutionHibernate();
 			Set<String> names = msols.keySet();
 			if(!names.contains(MazeName))
 			{
-				/*msh.setMaze(maze.toString());
+				msh.setMaze(maze.toString());
 				msh.setSol(sol.toString());
 				msh.setId(MazeName);
 				session.save(msh);
-				session.getTransaction().commit();*/
+				session.getTransaction().commit();
 				HashMap <Maze, Solution> temp1 = new HashMap<Maze, Solution>(); 
 				temp1.put(maze, sol);
 				this.msols.put(MazeName,temp1);
@@ -315,7 +320,7 @@ public class MyModel extends Observable implements Model
 			{
 				System.out.println("You entered the same name for two different mazes, This maze and solution won't go inside the database.");
 			}
-			//session.close();
+			session.close();
 			
 		}
 		

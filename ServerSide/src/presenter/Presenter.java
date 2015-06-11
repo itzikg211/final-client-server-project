@@ -135,7 +135,7 @@ public class Presenter implements Observer
 			m.solveMaze(m.getMaze());
 			
 			//in this part we are updating the names.txt file
-			BufferedReader reader1 = null;
+			/*BufferedReader reader1 = null;
 			try 
 			{
 				reader1 = new BufferedReader(new FileReader("names.txt"));
@@ -190,7 +190,7 @@ public class Presenter implements Observer
 			} catch (IOException e) 
 			{
 				e.printStackTrace();
-			}
+			}*/
 			
 			//sending the data to the client
 			compressObject(m.getSolution(),outToClient);

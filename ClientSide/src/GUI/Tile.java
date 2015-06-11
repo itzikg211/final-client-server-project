@@ -95,14 +95,10 @@ public class Tile extends Canvas
 				unclickJ = b;
 				String pos = "leave position : " + a + "," + b;
 				System.out.println(pos);
-				int decX = unclickI-clickI;
-				int decY = unclickJ-clickJ;
 				if(a==clickI && b==clickJ)
 				{
 					System.out.println("mouse didnt move!");
 				}
-				//double sl =  (double)(clickJ-unclickJ)/(double)(clickI-unclickI);
-				//System.out.println("THE SLOPE IS : " + sl);
 				if(Math.abs(clickI-unclickI) > Math.abs((clickJ - unclickJ)))
 				{
 					if(clickI < unclickI)//right
@@ -133,45 +129,6 @@ public class Tile extends Canvas
 						boat.dragBoat(2);
 					}
 				}
-					
-									
-				
-				/*if(clickJ < unclickJ && clickI < unclickI)
-				{
-					if((sl > 2.5) || (sl < -2.5 )) //down
-					{
-						mouseDir = 2;
-						System.out.println("Dir is DOWN");
-						boat.dragBoat(2);
-					}
-				}
-				if(clickJ > unclickJ )
-				{
-					if((sl > 2.5) || (sl < -2.5 )) //up
-					{
-						mouseDir = 0;
-						System.out.println("Dir is UP");
-						boat.dragBoat(0);
-					}
-				}
-				if(clickJ < unclickJ && clickI < unclickI )
-				{
-					if((sl < 0.5) && (sl > -0.5 )) //right
-					{
-						mouseDir = 1;
-						System.out.println("Dir is RIGHT");
-						boat.dragBoat(1);
-					}
-				}
-				if(clickI > unclickI && clickJ > unclickJ)
-				{
-					if((sl < 0.5) && (sl > -0.5 )) //left
-					{
-						mouseDir = 3;
-						System.out.println("Dir is LEFT");
-						boat.dragBoat(3);
-					}
-				}*/
 			}
 			@Override
 			public void mouseDown(MouseEvent arg0) { //when you press the mouse

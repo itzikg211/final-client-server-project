@@ -356,8 +356,9 @@ public class MyModel extends Observable implements Model
 			} 
 			catch (IOException e) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				sol=null;
+				return;
 			}
 			   try 
 			   {

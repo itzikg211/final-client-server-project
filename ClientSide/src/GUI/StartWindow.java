@@ -357,7 +357,7 @@ public class StartWindow extends BasicWindow implements View
 					{
 						/////check if the maze name is already inside the database
 						boolean flag = true;
-						String [] names = null;
+						/*String [] names = null;
 							BufferedReader reader = null;
 							try {
 								reader = new BufferedReader(new FileReader("names.txt"));
@@ -396,7 +396,7 @@ public class StartWindow extends BasicWindow implements View
 								mb.setMessage("Error! the name is already exists in the database");
 								mb.open();
 							}
-						}
+						}*/
 						if(flag == true)
 						{
 							maze.redraw();
