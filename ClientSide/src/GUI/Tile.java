@@ -51,7 +51,7 @@ public class Tile extends Canvas
 			        	/*e.gc.setForeground(new Color(null,255,0,0));
 			        	e.gc.setBackground(new Color(null,255,0,0));
 			        	e.gc.fillRectangle(width/3, height/3, width/3, height/3);*/
-			        	Image galgal = new Image(null, "resources/galgal.jpg");
+			        	Image galgal = new Image(null, "resources/galgal.png");
 			        	ImageData data1 = galgal.getImageData();
 			        	e.gc.drawImage(galgal,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
 			        }

@@ -357,6 +357,7 @@ public class MyModel extends Observable implements Model
 			catch (IOException e) 
 			{
 				e.printStackTrace();
+				System.out.println("null solution - does problems sometimes");
 				sol=null;
 				return;
 			}
