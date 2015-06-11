@@ -23,6 +23,8 @@ public class Run {
 	public static void main(String[] args) 
 	{
 		
+		GUIStart gui = new GUIStart("Start",1000,800);
+		gui.run();
 		///////////////////////////////////////////////////////////////////
 		/*MyModel m = new MyModel(new Properties());
 		Properties pro;
@@ -50,8 +52,6 @@ public class Run {
 		win.addObserver(p);
 		win.run();*/
 		////////////////////////////////////////////////////////////////////
-		GUIStart gui = new GUIStart("Start",1000,800);
-		gui.run();
 		/*XMLEncoder encoder;
 		try {
 			encoder = new XMLEncoder(new FileOutputStream("src/properties.xml"));

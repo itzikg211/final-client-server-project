@@ -35,10 +35,10 @@ public class Presenter implements Observer
 	 */
 	public Presenter(Model m,View v) 
 	{
-		commands.put("generate maze",  new generateMaze());
-		commands.put("display maze",  new displayMaze());
-		commands.put("solve maze",  new solveMaze());
-		commands.put("display solution",  new displaySolution());
+		commands.put("generate maze",  new GenerateMaze());
+		commands.put("display maze",  new DisplayMaze());
+		commands.put("solve maze",  new SolveMaze());
+		commands.put("display solution",  new DisplaySolution());
 		commands.put("exit",  new Exit());
 		this.m=m;
 		this.v=v;
@@ -49,7 +49,7 @@ public class Presenter implements Observer
 	 * @author Ran Sarussi
 	 *
 	 */
-	public class generateMaze implements Command
+	public class GenerateMaze implements Command
 	{
 
 		@Override
@@ -70,7 +70,7 @@ public class Presenter implements Observer
 	 * @author user1
 	 *
 	 */
-	public class displayMaze implements Command
+	public class DisplayMaze implements Command
 	{
 		@Override
 		public void doCommand(String path) throws FileNotFoundException,IOException
@@ -83,7 +83,7 @@ public class Presenter implements Observer
 	 * @author user1
 	 *
 	 */
-	public class solveMaze implements Command
+	public class SolveMaze implements Command
 	{
 		public void doCommand(String path) throws FileNotFoundException,IOException
 		{
@@ -120,7 +120,7 @@ public class Presenter implements Observer
 	 * @author user1
 	 *
 	 */
-	public class displaySolution implements Command
+	public class DisplaySolution implements Command
 	{
 		@Override
 		public void doCommand(String path) throws FileNotFoundException,IOException
@@ -253,11 +253,9 @@ public class Presenter implements Observer
 	{
 		if(mazes.containsKey(name))
 		{
-			//m.setName(name);
-			//m.solveMaze(mazes.get(name));
-			//System.out.println("Solution for " + name + " is ready!");	
 			String loc = i +"," + j;
 			m.setName(name);
+			m.solveMaze(m.getMaze());
 			return m.getSolution(loc);
 		}
 		return null;
@@ -277,11 +275,11 @@ public class Presenter implements Observer
 			System.out.println("The maze already exist");
 			return null;
 		}
+		m.setName(name);
 		m.generateMaze(rows,cols);
 		Maze maze = m.getMaze();
 		mazes.put(name, maze);
 		
-		m.setName(name);
 		System.out.println("Solution for " + command + " is ready!");			
 		BufferedReader reader = null;
 		try {

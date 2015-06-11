@@ -74,7 +74,7 @@ public class PropertiesGUI extends BasicWindow
 		nodiagonal.setText("Choose The Cost Of Movment Without Diagonal:");
 		nodiagonal.setLayoutData(new GridData(SWT.FILL,SWT.FILL, false,false,1,1));
 	    Scale regCost = new Scale (shell, SWT.BORDER);
-	    regCost.setSize (60, 30);
+	    regCost.setSize (60, 20);
 	    regCost.setMaximum (40);
 	    regCost.setMinimum(5);
 	    regCost.setPageIncrement (5);
@@ -82,7 +82,7 @@ public class PropertiesGUI extends BasicWindow
 		Label lblChooseReg = new Label(shell,SWT.NONE);
 		lblChooseReg.setText("The Cost You Chose For Regular Movement:");
 		lblChooseReg.setLayoutData(new GridData(SWT.FILL,SWT.FILL, false,false,1,1));
-		t1 = new Text(shell, SWT.BORDER);
+		t1 = new Text(shell, SWT.BORDER | SWT.READ_ONLY);
 		t1.setLayoutData(new GridData(SWT.FILL,SWT.TOP, false,false,1,1));
 		t1.setText("10");
 	    //the cost of solving in diagonal
@@ -90,15 +90,15 @@ public class PropertiesGUI extends BasicWindow
 	    diagonal.setText("Choose The Cost Of Movment In Diagonal:");
 	    diagonal.setLayoutData(new GridData(SWT.FILL,SWT.FILL, false,false,1,1));
 	    Scale DiagonalCost = new Scale (shell, SWT.BORDER);
-	    DiagonalCost.setSize (60, 30);
+	    DiagonalCost.setSize (60, 20);
 	    DiagonalCost.setMaximum ((regCost.getSelection()*2)-1);
-	    DiagonalCost.setMinimum(5);
+	    DiagonalCost.setMinimum(regCost.getSelection()+1);
 	    DiagonalCost.setPageIncrement(5);
 	    DiagonalCost.setLayoutData(new GridData(SWT.FILL,SWT.FILL, true ,false,1,1));
 		Label lblChooseDig = new Label(shell,SWT.NONE);
 		lblChooseDig.setText("The Cost You Chose For Diagonal Movement:");
 		lblChooseDig.setLayoutData(new GridData(SWT.FILL,SWT.FILL, false,false,1,1));
-		t2 = new Text(shell, SWT.BORDER);
+		t2 = new Text(shell, SWT.BORDER | SWT.READ_ONLY);
 		t2.setLayoutData(new GridData(SWT.FILL,SWT.TOP, false,false,1,1));
 		t2.setText("15");
 		//the way of view
@@ -215,6 +215,8 @@ public class PropertiesGUI extends BasicWindow
 			{
 				t1.setText(""+ regCost.getSelection());
 				DiagonalCost.setMaximum ((regCost.getSelection()*2)-1);
+				DiagonalCost.setMinimum(regCost.getSelection()+1);
+				t2.setText(""+(regCost.getSelection()+1));
 				
 			}
 			

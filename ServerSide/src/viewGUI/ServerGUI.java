@@ -1,4 +1,4 @@
-package model;
+package viewGUI;
 
 import java.net.Socket;
 import java.util.HashMap;
@@ -9,7 +9,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
-public class ServerGUI extends BasicWindow
+import presenter.PropertiesServer;
+
+public class ServerGUI extends BasicWindow implements View
 {
 	List IdList;
 	List IpList;
@@ -31,6 +33,7 @@ public class ServerGUI extends BasicWindow
 		IdList.setLayoutData(new GridData(SWT.CENTER,SWT.TOP, true,true,1,1));
 		IpList = new List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		IpList.setLayoutData(new GridData(SWT.CENTER,SWT.TOP, true,true,1,1));
+		
 	}
 	public void setClients(HashMap<Integer, Socket> clients)
 	{
@@ -45,5 +48,19 @@ public class ServerGUI extends BasicWindow
 				IpList.add(clients.get(i).getInetAddress().toString());
 			}
 		}
+	}
+
+	@Override
+	public void startServer(PropertiesServer pro) 
+	{
+		MyTCPIPServer start = new MyTCPIPServer(pro.getPortNumber(),new MazeHandler());
+		start.startServer(pro.getNumOfClients());
+		
+	}
+
+	@Override
+	public void closeServer() 
+	{
+		
 	}
 }

@@ -5,9 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import presenter.PropertiesServer;
-import model.MazeHandler;
-import model.MyTCPIPServer;
-import model.ServerGUI;
+import viewGUI.ServerGUI;
 
 public class Run 
 {
@@ -15,10 +13,10 @@ public class Run
 	public static void main(String[] args) 
 	{
 		
-		System.out.println("GOOD");
+		//System.out.println("GOOD");
 		PropertiesServer pro = readProperties();
-		MyTCPIPServer start = new MyTCPIPServer(pro.getPortNumber(),new MazeHandler());
-		start.startServer(pro.getNumOfClients() + 1);
+		ServerGUI sgui = new ServerGUI("Server",1000,800);
+		sgui.startServer(pro);
 	}
 	
 	public static PropertiesServer readProperties()

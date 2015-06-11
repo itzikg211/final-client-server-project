@@ -1,4 +1,4 @@
-package model;
+package viewGUI;
 
 import java.util.Observable;
 

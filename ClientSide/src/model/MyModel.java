@@ -12,8 +12,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Observable;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -260,24 +263,24 @@ public class MyModel extends Observable implements Model
 		else
 		{
 			//System.out.println("The hint maze is NOT null");
-			outToServer.println("solve maze"+ " " + mazeName);
-			outToServer.flush();
-			try 
-			{
-				expandSolution(myServer.getInputStream());
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
+			Future <Solution> future = null;
 			outToServer.println("hint maze"+ " " + mazeName + " " + s);
 			outToServer.flush();
-			try 
-			{
-				expandSolution(myServer.getInputStream());
-			} 
-			catch (IOException e) 
-			{
+			future = executor.submit(new Callable<Solution>() 
+					{
+						@Override
+						public Solution call() throws Exception 
+						{		
+							expandSolution(myServer.getInputStream());
+							return sol;
+						}
+			});
+			try {
+				future.get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -416,13 +419,24 @@ public class MyModel extends Observable implements Model
 	{
 		outToServer.println("solve maze"+ " " + mazeName);
 		outToServer.flush();
-		try 
-		{
-			expandSolution(myServer.getInputStream());
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
+		Future<Solution> future = null;
+		future = executor.submit(new Callable<Solution>() 
+				{
+					@Override
+					public Solution call() throws Exception 
+					{
+						expandSolution(myServer.getInputStream());		
+						return sol;
+					}
+		});
+		try {
+			future.get();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 

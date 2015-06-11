@@ -742,6 +742,8 @@ public class StartWindow extends BasicWindow implements View
 				switch(rc)
 				{
 				case SWT.YES:
+					setChanged();
+					notifyObservers("finish");
 					display.dispose();				
 				break;
 				case SWT.NO:

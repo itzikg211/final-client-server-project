@@ -210,7 +210,7 @@ public class MyModel extends Observable implements Model
 			temp = msols.get(MazeName);
 			sol = temp.get(m);
 			setChanged();
-			notifyObservers(4);
+			notifyObservers("solved the maze");
 		}
 		else
 		{
@@ -277,11 +277,10 @@ public class MyModel extends Observable implements Model
 			break;
 			}
 			
-			Solution sol1;
 			try 
 			{
 				//////////////////////////added here the get function!!!!!!!!!!!!!!!!!!!!!!!!!!
-				sol1 = future.get();
+				future.get();
 			} catch (InterruptedException e) 
 			{
 				// TODO Auto-generated catch block
@@ -384,6 +383,7 @@ public class MyModel extends Observable implements Model
 	@Override
 	public Solution getSolution(String s) 
 	{
+		Solution sol1 = null;
 		System.out.println("GETTING THE HINT SOLUTION");
 		if(maze==null)
 		{
@@ -459,7 +459,6 @@ public class MyModel extends Observable implements Model
 			break;
 			}
 			
-			Solution sol1;
 			try 
 			{
 				//////////////////////////added here the get function!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -474,7 +473,7 @@ public class MyModel extends Observable implements Model
 				e.printStackTrace();
 			}
 		}
-		return sol;		
+		return sol1;		
 		
 	}
 
