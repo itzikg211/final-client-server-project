@@ -100,36 +100,36 @@ public class Boat
 		}
 		if(dir==1) //right
 		{
-			System.out.println("UP");
+			System.out.println("RIGHT");
 			if(maze.canMove(maze.getX(),maze.getY(), 1))
 			{
 				System.out.println("CAN MOVE");
 				maze.setDir(1);
-				maze.setBoatPosition(maze.getX()+1,maze.getY());						
+				maze.setBoatPosition(maze.getX(),maze.getY()+1);						
 			}
 			else
 				System.out.println("CAN NOT MOVE");
 		}
 		if(dir==2) //down
 		{
-			System.out.println("UP");
+			System.out.println("DOWN");
 			if(maze.canMove(maze.getX(),maze.getY(), 2))
 			{
 				System.out.println("CAN MOVE");
 				maze.setDir(2);
-				maze.setBoatPosition(maze.getX(),maze.getY()-1);						
+				maze.setBoatPosition(maze.getX()+1,maze.getY());						
 			}
 			else
 				System.out.println("CAN NOT MOVE");
 		}
 		if(dir==3) //left
 		{
-			System.out.println("UP");
+			System.out.println("LEFT");
 			if(maze.canMove(maze.getX(),maze.getY(), 3))
 			{
 				System.out.println("CAN MOVE");
 				maze.setDir(3);
-				maze.setBoatPosition(maze.getX(),maze.getY()+1);						
+				maze.setBoatPosition(maze.getX(),maze.getY()-1);						
 			}
 			else
 				System.out.println("CAN NOT MOVE");
