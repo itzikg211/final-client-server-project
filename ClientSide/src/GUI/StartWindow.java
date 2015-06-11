@@ -568,7 +568,7 @@ public class StartWindow extends BasicWindow implements View
 		 * handles the user's key events
 		 */
 		maze.addKeyListener(new KeyListener(){
-			Boat b = new Boat();
+			//Boat b = new Boat();
 			@Override
 			public void keyPressed(KeyEvent e) {
 				

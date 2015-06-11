@@ -106,7 +106,8 @@ public class Tile extends Canvas
 					if((sl > 2.5) || (sl < -2.5 )) //down
 					{
 						mouseDir = 2;
-						//System.out.println("Dir is DOWN");
+						System.out.println("Dir is DOWN");
+						boat.dragBoat(2);
 					}
 				}
 				if(clickJ > unclickJ )
@@ -114,7 +115,8 @@ public class Tile extends Canvas
 					if((sl > 2.5) || (sl < -2.5 )) //up
 					{
 						mouseDir = 0;
-						//System.out.println("Dir is UP");
+						System.out.println("Dir is UP");
+						boat.dragBoat(0);
 					}
 				}
 				if(clickI < unclickI )
@@ -122,7 +124,8 @@ public class Tile extends Canvas
 					if((sl < 0.5) && (sl > -0.5 )) //right
 					{
 						mouseDir = 1;
-						//System.out.println("Dir is RIGHT");
+						System.out.println("Dir is RIGHT");
+						boat.dragBoat(1);
 					}
 				}
 				if(clickI > unclickI )
@@ -130,7 +133,8 @@ public class Tile extends Canvas
 					if((sl < 0.5) && (sl > -0.5 )) //left
 					{
 						mouseDir = 3;
-						//System.out.println("Dir is LEFT");
+						System.out.println("Dir is LEFT");
+						boat.dragBoat(3);
 					}
 				}
 			}
@@ -276,7 +280,10 @@ public class Tile extends Canvas
 	{
 		return finalImg;
 	}
-
+	public void setBoat(Boat b)
+	{
+		this.boat=b;
+	}
 	public void setFinalImg(boolean finalImg) 
 	{
 		this.finalImg = finalImg;
