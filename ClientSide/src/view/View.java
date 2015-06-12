@@ -53,4 +53,6 @@ public interface View {
 	 * @param sol String that states the first position of the solution
 	 */
 	void setStartSolution(Solution sol);
+	void setHasName(boolean value);
+	boolean getHasName();
 }

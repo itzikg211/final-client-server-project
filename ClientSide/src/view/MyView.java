@@ -116,6 +116,16 @@ public class MyView extends Observable implements View {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void setHasName(boolean value) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public boolean getHasName() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }

@@ -59,7 +59,7 @@ public class MyTCPIPServer
 							// TODO Auto-generated method stub
 							try 
 							{
-								connectMVP(someClient);
+								//connectMVP(someClient);
 								ch.handleClient(someClient.getInputStream(),someClient.getOutputStream());			
 								//someClient.getOutputStream().close();
 								//someClient.getInputStream().close();

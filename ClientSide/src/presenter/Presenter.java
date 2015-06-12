@@ -92,27 +92,6 @@ public class Presenter implements Observer
 			Maze maze = mazes.get(command);
 			m.solveMaze(maze);
 			System.out.println("Solution for " + command + " is ready!");			
-			/*BufferedReader reader = new BufferedReader(new FileReader("names.txt"));
-			String temp = "";
-			String line = "";
-			try 
-			{
-				while ((temp = reader.readLine()) != null)
-				{
-					line+=temp;
-				}
-			} 
-			catch (IOException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			reader.close();
-			
-			OutputStream out = new FileOutputStream(new File("names.txt"));
-			String str = line + "#" + ints[0];
-			out.write(str.getBytes());
-			out.close();*/
 		}		
 	}
 	/**
@@ -218,7 +197,17 @@ public class Presenter implements Observer
 		}
 		if (o==m)
 		{
-			v.printMessage((String)arg);
+			if(arg!=null)
+			{
+				String str = (String)arg;
+				if(str.startsWith("name in db"))
+				{
+					v.setHasName(true);
+				}
+				if(str.startsWith("name is fine"))
+					v.setHasName(false);
+				}
+			//v.printMessage((String)arg);
 		}
 		//////////////addition to the original presenter
 
@@ -269,66 +258,18 @@ public class Presenter implements Observer
 	 */
 	public Maze setGuiMaze(int rows,int cols,String name)
 	{
-		if(mazes.keySet().contains(name))
+		/*if(mazes.keySet().contains(name))
 		{
 			System.out.println("TRY");
 			System.out.println("The maze already exist");
 			return null;
-		}
+		}*/
 		m.setName(name);
 		m.generateMaze(rows,cols);
 		Maze maze = m.getMaze();
 		mazes.put(name, maze);
 		
 		System.out.println("Solution for " + command + " is ready!");			
-		/*BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader("names.txt"));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		String temp = "";
-		String line = "";
-		try 
-		{
-			while ((temp = reader.readLine()) != null)
-			{
-				line+=temp;
-			}
-		} 
-		catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			reader.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		OutputStream out = null;
-		try {
-			out = new FileOutputStream(new File("names.txt"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String str = line + "#" + name;
-		try {
-			out.write(str.getBytes());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		
 		return maze;
 	}

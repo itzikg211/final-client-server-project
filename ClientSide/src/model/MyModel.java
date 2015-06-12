@@ -1,9 +1,8 @@
 package model;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -39,12 +38,11 @@ public class MyModel extends Observable implements Model
 	private Maze maze;
 	private Solution sol;
 	private String mazeName;
-	//private HashMap<String,HashMap<Maze, Solution>> msols;
 	private Properties pro;
 	private Socket myServer;
-	//private ObjectInputStream inFromServer;
 	private PrintWriter outToServer;
-	
+	private String [] names;
+	int nameIsFine;
 	 /**
 	   * This is the C'tor of MyModel. 
 	   * <p>The first thing it does is initialize the ThreadPool.
@@ -58,31 +56,29 @@ public class MyModel extends Observable implements Model
 		//Initialize the threadpool.
 		this.pro = pro;
 		executor=Executors.newFixedThreadPool(pro.getThreadNumber());
-		//msols = new HashMap<String, HashMap<Maze,Solution>>();
 		System.out.println("CLIENT SIDE");
+		nameIsFine = 0;
 		myServer = null;
 		try 
 		{
 			myServer = new Socket(pro.getIpAddr(),pro.getPortNumber());
-		} catch (UnknownHostException e) 
+		} 
+		catch (UnknownHostException e) 
 		{
 			System.out.println("unknown host! You should check if the server is even open...");
 			System.exit(0);
-			//e.printStackTrace();
 		} 
 		catch (IOException e) 
 		{
 			System.out.println("Wrong I/O");
 			System.out.println("You should check if the server is even open...");
 			System.exit(0);
-			//e.printStackTrace();
 		}
 		try 
 		{
 			outToServer = new PrintWriter(new OutputStreamWriter(myServer.getOutputStream()));
 		} catch (IOException e1) 
 		{
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		try 
@@ -93,112 +89,18 @@ public class MyModel extends Observable implements Model
 		{
 			e.printStackTrace();
 		}
-	
-		
-		/*inFromServer = null;
-		try 
+		names = new String[1];
+		names[0] = "gogo";
+	/*	try 
 		{
-			inFromServer = new BufferedReader(new InputStreamReader(myServer.getInputStream()));
-		} catch (IOException e1) 
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		outToServer = null;
-		try 
-		{
-			outToServer = new PrintWriter(new OutputStreamWriter(myServer.getOutputStream()));
-		} catch (IOException e1) 
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		inFromUser = new BufferedReader(new InputStreamReader(System.in));
-		String line = null;
-		try 
-		{
-			while(!(line = inFromUser.readLine()).equals("exit"))
-			{
-				//System.out.println(line);
-				outToServer.println(line);
-				outToServer.flush();
-				
-				String serverMSG = inFromServer.readLine();
-				System.out.println(serverMSG);
-			}
-		} catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		outToServer.println(line);
-		outToServer.flush();
-		try 
-		{
-			System.out.println(inFromServer.readLine());
-		} catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//getting all the data from the database.
-       /* Configuration configuration = new Configuration();
-        configuration.configure("hibernate.cfg.xml");
-        StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-        SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		MazeSolutionHibernate ms = new MazeSolutionHibernate();
-		String [] names = null;
-		try 
-		{
-			BufferedReader reader = new BufferedReader(new FileReader("names.txt"));
-			String line;
-			try 
-			{
-				while ((line = reader.readLine()) != null)
-				{
-					names = line.split("#");
-				}
-			} 
-			catch (IOException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(names!=null)
-			{
-				
-				for(int i=1;i<names.length;i++)
-				{
-					ms = (MazeSolutionHibernate) session.get(MazeSolutionHibernate.class,names[i]);
-					HashMap<Maze, Solution> temp = new HashMap<Maze, Solution>();
-					temp.put(ms.stringToMaze(ms.getMaze()), ms.stringToSolution(ms.getSol()));
-					msols.put(ms.getId(), temp);
-					
-				}
-			}
+			expandNames(myServer.getInputStream());
 		} 
-		catch (FileNotFoundException e) 
+		catch (IOException e) 
 		{
 			e.printStackTrace();
-		}
-		//System.out.println(ms.getId()+" "+ms.getMaze()+" "+ms.getSol());
-		
-		session.close();*/
+		}*/
 	}
 
-/*	public void continueConnection()
-	{
-		try 
-		{
-			outToServer = new PrintWriter(new OutputStreamWriter(myServer.getOutputStream()));
-		} catch (IOException e1) 
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}*/
 	
 	
 	public void compressObject(Object objectToCompress, OutputStream outstream)
@@ -249,6 +151,43 @@ public class MyModel extends Observable implements Model
 		}
 	}
 	
+	public void expandNames(InputStream instream)
+	 {
+			GZIPInputStream gs = null;
+			try 
+			{
+				gs = new GZIPInputStream(instream);
+			} 
+			catch (IOException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			   ObjectInputStream ois = null;
+			try 
+			{
+				ois = new ObjectInputStream(gs);
+			} 
+			catch (IOException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			   try 
+			   {
+				   names = (String []) ois.readObject();
+			   } catch (ClassNotFoundException e) 
+			   {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			   catch (IOException e) 
+			   {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+	  }
+	
 	
 	
 	@Override
@@ -266,24 +205,29 @@ public class MyModel extends Observable implements Model
 			Future <Solution> future = null;
 			outToServer.println("hint maze"+ " " + mazeName + " " + s);
 			outToServer.flush();
-			future = executor.submit(new Callable<Solution>() 
-					{
-						@Override
-						public Solution call() throws Exception 
-						{		
-							expandSolution(myServer.getInputStream());
-							return sol;
-						}
-			});
-			try {
-				future.get();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			future = executor.submit(new Callable<Solution>() 
+//					{
+//						@Override
+//						public Solution call() throws Exception 
+//						{		
+							try {
+								expandSolution(myServer.getInputStream());
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+//							return sol;
+//						}
+//			});
+//			try {
+//				future.get();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (ExecutionException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			return sol;
 		}		
 		
@@ -336,6 +280,16 @@ public class MyModel extends Observable implements Model
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
+			   /*try 
+			   {
+				  InputStream temp = new BufferedInputStream(ois);
+				  temp.reset();
+			   } 
+			   catch (IOException e) 
+			   {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 	  }
 	 public void expandSolution(InputStream instream)
 	 {
@@ -372,34 +326,47 @@ public class MyModel extends Observable implements Model
 			   catch (IOException e) 
 			   {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} 
-			  /* finally 
+			  /* try 
 			   {
-			    try 
-			    {
-					gs.close();
-					ois.close();
-				} catch (IOException e) 
-			    {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			   }*/
+				  InputStream temp = new BufferedInputStream(ois);
+				  temp.reset();
+			   } 
+			   catch (IOException e) 
+			   {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 	  }
 	
 	
 	@Override
 	public void generateMaze(int rows, int cols) 
 	{
-		outToServer.println("generate maze"+ " " + mazeName + " " + rows + " "+ cols);
-		outToServer.flush();
-		try 
+		for(String name : names)
 		{
-			expandMaze(myServer.getInputStream());
-		} catch (IOException e1) 
+			if(name.equals(mazeName))
+			{
+				nameIsFine+=1;
+				setChanged();
+				notifyObservers("name in db");
+			}
+		}
+		if(nameIsFine % 2 == 0)
 		{
-			e1.printStackTrace();
+			outToServer.println("generate maze"+ " " + mazeName + " " + rows + " "+ cols);
+			outToServer.flush();
+			nameIsFine = 0;
+			try 
+			{
+				expandMaze(myServer.getInputStream());
+			} catch (IOException e1) 
+			{
+				e1.printStackTrace();
+			}
+			setChanged();
+			notifyObservers("name is fine");
 		}
 		
 	}
@@ -419,27 +386,33 @@ public class MyModel extends Observable implements Model
 	@Override
 	public void solveMaze(Maze m) 
 	{
+		//names[names.length] = mazeName;
 		outToServer.println("solve maze"+ " " + mazeName);
 		outToServer.flush();
-		Future<Solution> future = null;
-		future = executor.submit(new Callable<Solution>() 
-				{
-					@Override
-					public Solution call() throws Exception 
-					{
-						expandSolution(myServer.getInputStream());		
-						return sol;
-					}
-		});
-		try {
-			future.get();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ExecutionException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		Future<Solution> future = null;
+//		future = executor.submit(new Callable<Solution>() 
+//				{
+//					@Override
+//					public Solution call() throws Exception 
+//					{
+						try {
+							expandSolution(myServer.getInputStream());
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}		
+//						return sol;
+//					}
+//		});
+//		try {
+//			future.get();
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (ExecutionException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 	}
 
 	@Override

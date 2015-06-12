@@ -49,8 +49,10 @@ public class MyModel extends Observable implements Model
 	private String MazeName;
 	private HashMap<String,HashMap<Maze, Solution>> msols;
 	private PropertiesServer pro;
+	private String [] names;
 	
-	 /**
+
+	/**
 	   * This is the C'tor of MyModel. 
 	   * <p>The first thing it does is initialize the ThreadPool.
 	   * The second thing it does is getting all the data(name, maze, solution) from the database, from the MazeSolutionHibernate table..
@@ -71,8 +73,6 @@ public class MyModel extends Observable implements Model
         SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		MazeSolutionHibernate ms = new MazeSolutionHibernate();
-		String [] names = null;
 		@SuppressWarnings("unchecked")
 		List<MazeSolutionHibernate> allList = session.createQuery("from model.MazeSolutionHibernate").list();
 		Iterator<MazeSolutionHibernate> itr = allList.iterator();
@@ -83,7 +83,13 @@ public class MyModel extends Observable implements Model
 			HashMap<Maze, Solution> temp = new HashMap<Maze, Solution>();
 			temp.put(msh.stringToMaze(msh.getMaze()), msh.stringToSolution(msh.getSol()));
 			msols.put(msh.getId(), temp);
-			
+		}
+		int i=0;
+		names = new String [msols.keySet().size()];
+		for(String key : msols.keySet())
+		{
+			names[i] = key;
+			i++;
 		}
 		System.out.println("finished receiving data from DB");
 		session.close();
@@ -126,52 +132,52 @@ public class MyModel extends Observable implements Model
 			switch(pro.getMazeGenerator()) 
 			{
 			case DFS_ALGO:
-				Future<Maze> future = executor.submit(new Callable<Maze>()
-						{
-		            @Override
-		            public Maze call() throws Exception 
-		            {
+//				Future<Maze> future = executor.submit(new Callable<Maze>()
+//						{
+//		            @Override
+//		            public Maze call() throws Exception 
+//		            {
 		    			MazeGenerator mg=new DFSMazeGenerator();
 		    			maze = mg.generateMaze(rows,cols);
-		    			return maze;
-		             }
-		             });
+//		    			return maze;
+//		             }
+//		             });
 				notifyObservers("Genrate completed");
-				try 
-				{
-					Maze temp = future.get();
-				} 
-				catch (InterruptedException e) 
-				{
-					e.printStackTrace();
-				} catch (ExecutionException e) 
-				{
-					e.printStackTrace();
-				}
+//				try 
+//				{
+//					Maze temp = future.get();
+//				} 
+//				catch (InterruptedException e) 
+//				{
+//					e.printStackTrace();
+//				} catch (ExecutionException e) 
+//				{
+//					e.printStackTrace();
+//				}
 				break;
 			case RANDOM_ALGO:
-				Future<Maze> future1 = executor.submit(new Callable<Maze>()
-						{
-		            @Override
-		            public Maze call() throws Exception 
-		            {
-		    			MazeGenerator mg=new RandomMazeGenerator();
-		    			maze = mg.generateMaze(rows,cols);
-		    			return maze;
-		             }
-		             });
+//				Future<Maze> future1 = executor.submit(new Callable<Maze>()
+//						{
+//		            @Override
+//		            public Maze call() throws Exception 
+//		            {
+		    			MazeGenerator mg1=new RandomMazeGenerator();
+		    			maze = mg1.generateMaze(rows,cols);
+//		    			return maze;
+//		             }
+//		             });
 					notifyObservers("Genrate completed");
-					try 
-					{
-						Maze temp = future1.get();
-					} 
-					catch (InterruptedException e) 
-					{
-						e.printStackTrace();
-					} catch (ExecutionException e) 
-					{
-						e.printStackTrace();
-					}
+//					try 
+//					{
+//						Maze temp = future1.get();
+//					} 
+//					catch (InterruptedException e) 
+//					{
+//						e.printStackTrace();
+//					} catch (ExecutionException e) 
+//					{
+//						e.printStackTrace();
+//					}
 				break;
 			default:
 				break;
@@ -223,78 +229,78 @@ public class MyModel extends Observable implements Model
 			switch(pro.getMazeSolver())
 			{
 			case BFS_DIAGONAL:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
                 	notifyObservers("\nSolution BFS with diagonals");
         			MazeSearch ms2 = new MazeSearch(m,true);
         			BFS sol3 = new BFS();
         			sol = sol3.search(ms2);
-        			return sol;
-                 }
-            });
+//        			return sol;
+//                 }
+//            });
 			break;
 			case BFS_NO_DIAGONAL:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
             		System.out.println("\nSolution BFS without diagonals");
             		MazeSearch ms1 = new MazeSearch(m,false);
             		BFS sol1 = new BFS();
             		sol = sol1.search(ms1);
-            		return sol;
-                 }
-            });
+//            		return sol;
+//                 }
+//            });
 			break;
 			case ASTAR_MANHATTAN_DISTANCE:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
                 	notifyObservers("\nSolution A* without diagonals");
         			MazeSearch ams1 = new MazeSearch(m,false);
         			AStar sol5 = new AStar();
         			sol5.setH(new MazeManhattanDistance());
         			sol = sol5.search(ams1);
-        			return sol;
-                 }
-            });
+//        			return sol;
+//                 }
+//            });
 			break;
 			case ASTAR_AIR_DISTANCE:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
             		System.out.println("\nSolution A* with diagonals");
             		MazeSearch ams2 = new MazeSearch(m,true);
             		AStar sol7 = new AStar();
             		sol7.setH(new MazeAirDistance());
             		sol = sol7.search(ams2);
-            		return sol;
-                 }
-            });
+//            		return sol;
+//                 }
+//            });
 			break;
 			}
 			
-			try 
-			{
-				//////////////////////////added here the get function!!!!!!!!!!!!!!!!!!!!!!!!!!
-				future.get();
-			} catch (InterruptedException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try 
+//			{
+//				//////////////////////////added here the get function!!!!!!!!!!!!!!!!!!!!!!!!!!
+//				future.get();
+//			} catch (InterruptedException e) 
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (ExecutionException e) 
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			/////here we communicate with the database
 			
 			Configuration configuration = new Configuration();
@@ -304,22 +310,20 @@ public class MyModel extends Observable implements Model
 			Session session = sessionFactory.openSession();
 			session.beginTransaction();
 			MazeSolutionHibernate msh = new MazeSolutionHibernate();
-			Set<String> names = msols.keySet();
-			if(!names.contains(MazeName))
+			if(msols.containsKey(MazeName))
 			{
-				msh.setMaze(maze.toString());
-				msh.setSol(sol.toString());
-				msh.setId(MazeName);
-				session.save(msh);
-				session.getTransaction().commit();
-				HashMap <Maze, Solution> temp1 = new HashMap<Maze, Solution>(); 
-				temp1.put(maze, sol);
-				this.msols.put(MazeName,temp1);
-			}
-			else
-			{
+				session.close();
 				System.out.println("You entered the same name for two different mazes, This maze and solution won't go inside the database.");
+				return;
 			}
+			msh.setMaze(maze.toString());
+			msh.setSol(sol.toString());
+			msh.setId(MazeName);
+			session.save(msh);
+			session.getTransaction().commit();
+			HashMap <Maze, Solution> temp1 = new HashMap<Maze, Solution>(); 
+			temp1.put(maze, sol);
+			msols.put(MazeName, temp1);
 			session.close();
 			
 		}
@@ -401,41 +405,41 @@ public class MyModel extends Observable implements Model
 			switch(pro.getMazeSolver())
 			{
 			case BFS_DIAGONAL:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
                 	notifyObservers("\nSolution BFS with diagonals");
         			MazeSearch ms2 = new MazeSearch(maze,true);
         			ms2.setStartState(s);
         			BFS sol3 = new BFS();
         			sol = sol3.search(ms2);
         			return sol;
-                 }
-            });
-			break;
+//                 }
+//            });
+//			break;
 			case BFS_NO_DIAGONAL:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
             		System.out.println("\nSolution BFS without diagonals");
             		MazeSearch ms1 = new MazeSearch(maze,false);
             		ms1.setStartState(s);
-            		BFS sol1 = new BFS();
-            		sol = sol1.search(ms1);
+            		BFS sol2 = new BFS();
+            		sol = sol2.search(ms1);
             		return sol;
-                 }
-            });
-			break;
+//                 }
+//            });
+//			break;
 			case ASTAR_MANHATTAN_DISTANCE:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
                 	notifyObservers("\nSolution A* without diagonals");
         			MazeSearch ams1 = new MazeSearch(maze,false);
         			ams1.setStartState(s);
@@ -443,15 +447,15 @@ public class MyModel extends Observable implements Model
         			sol5.setH(new MazeManhattanDistance());
         			sol = sol5.search(ams1);
         			return sol;
-                 }
-            });
-			break;
+//                 }
+//            });
+//			break;
 			case ASTAR_AIR_DISTANCE:
-			future = executor.submit(new Callable<Solution>()
-			{
-                @Override
-                public Solution call() throws Exception 
-                {
+//			future = executor.submit(new Callable<Solution>()
+//			{
+//                @Override
+//                public Solution call() throws Exception 
+//                {
             		System.out.println("\nSolution A* with diagonals");
             		MazeSearch ams2 = new MazeSearch(maze,true);
             		ams2.setStartState(s);
@@ -459,28 +463,43 @@ public class MyModel extends Observable implements Model
             		sol7.setH(new MazeAirDistance());
             		sol = sol7.search(ams2);
             		return sol;
-                 }
-            });
-			break;
-			}
-			
-			try 
-			{
-				//////////////////////////added here the get function!!!!!!!!!!!!!!!!!!!!!!!!!!
-				sol1 = future.get();
-			} catch (InterruptedException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+//                 }
+//            });
+//			break;
 			}
 		}
-		return sol1;		
+//			try 
+//			{
+//				//////////////////////////added here the get function!!!!!!!!!!!!!!!!!!!!!!!!!!
+//				sol1 = future.get();
+//			} 
+//			catch (InterruptedException e) 
+//			{
+//				e.printStackTrace();
+//			} 
+//			catch (ExecutionException e) 
+//			{
+//				e.printStackTrace();
+//			}
+//		}
+//		return sol1;
+		return null;
 		
 	}
+	@Override
+	public String[] getNames() 
+	{
+		return names;
+	}
+	@Override
+	public void setNames(String[] names) 
+	{
+		this.names = names;
+	}
+	
+	
+
+	
 
 	
 }

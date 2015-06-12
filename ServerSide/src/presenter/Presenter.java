@@ -48,6 +48,7 @@ public class Presenter implements Observer
 				try 
 				{
 					commands.get("generate maze").doCommand(line);
+					outToClient.flush();
 				} 
 				catch (FileNotFoundException e) 
 				{
@@ -67,6 +68,7 @@ public class Presenter implements Observer
 				try 
 				{
 					commands.get("solve maze").doCommand(line);
+					outToClient.flush();
 				} 
 				catch (FileNotFoundException e) 
 				{
@@ -86,6 +88,7 @@ public class Presenter implements Observer
 				try 
 				{
 					commands.get("hint maze").doCommand(line);
+					outToClient.flush();
 				} 
 				catch (FileNotFoundException e) 
 				{
@@ -133,65 +136,6 @@ public class Presenter implements Observer
 			String [] str = path.split(" ");
 			m.setName(str[2]);
 			m.solveMaze(m.getMaze());
-			
-			//in this part we are updating the names.txt file
-			/*BufferedReader reader1 = null;
-			try 
-			{
-				reader1 = new BufferedReader(new FileReader("names.txt"));
-			} 
-			catch (FileNotFoundException e1) 
-			{
-				e1.printStackTrace();
-			}
-			String temp = "";
-			String line1 = "";
-			try 
-			{
-				while ((temp = reader1.readLine()) != null)
-				{
-					line1+=temp;
-				}
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-			try 
-			{
-				reader1.close();
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-			
-			OutputStream out = null;
-			try 
-			{
-				out = new FileOutputStream(new File("names.txt"));
-			} 
-			catch (FileNotFoundException e) 
-			{
-				e.printStackTrace();
-			}
-			String str1 = line1 + "#" + str[2];
-			try 
-			{
-				out.write(str1.getBytes());
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-			try 
-			{
-				out.close();
-			} catch (IOException e) 
-			{
-				e.printStackTrace();
-			}*/
-			
 			//sending the data to the client
 			compressObject(m.getSolution(),outToClient);
 			try 
@@ -213,7 +157,7 @@ public class Presenter implements Observer
 		{
 			String [] str = path.split(" "); 
 			m.setName(str[2]);
-			//m.solveMaze(m.getMaze());
+			//m.solveMaze(m.getMaze());///changed here - added this line need to check if it works
 			compressObject(m.getSolution(str[3]),outToClient);
 		}
 		
@@ -226,8 +170,7 @@ public class Presenter implements Observer
 		try 
 		{
 			gz = new GZIPOutputStream(outstream);
-		} 
-		catch (IOException e1) 
+		} catch (IOException e1) 
 		{
 			e1.printStackTrace();
 		}
@@ -235,8 +178,7 @@ public class Presenter implements Observer
 		try 
 		{
 			oos = new ObjectOutputStream(gz);
-		} 
-		catch (IOException e1) 
+		} catch (IOException e1) 
 		{
 			e1.printStackTrace();
 		}
@@ -253,6 +195,7 @@ public class Presenter implements Observer
 			}
 			try {
 				oos.flush();
+				oos.reset();
 			} catch (IOException e) 
 			{
 
@@ -282,6 +225,8 @@ public class Presenter implements Observer
 	public void setOutToClient(OutputStream outToClient) 
 	{
 		this.outToClient = outToClient;
+		//the first thing we want to do is to send the names in the DB to the client
+		compressObject(m.getNames(), outToClient);
 	}
 	
 	

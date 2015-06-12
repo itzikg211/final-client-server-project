@@ -63,4 +63,7 @@ public interface Model
 	   */
 	
 	void setSol(Solution s);
+	
+	public String[] getNames();
+	public void setNames(String[] names); 
 }

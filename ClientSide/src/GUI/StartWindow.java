@@ -63,7 +63,8 @@ public class StartWindow extends BasicWindow implements View
 	Solution sol;
 	Solution sol2;
 	Boat b;
-	boolean solvedAlready = false;
+	boolean nameInDb;
+	boolean solvedAlready;
 	boolean hasWonForMusic;
 	/**
 	 * Constructs the start window 
@@ -75,6 +76,8 @@ public class StartWindow extends BasicWindow implements View
 	{
 		super(title, width, height);
 		properties = new Properties();
+		solvedAlready = false;
+		nameInDb = true;
 		//BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		//PrintWriter writer = new PrintWriter(System.out);
 	}
@@ -355,74 +358,63 @@ public class StartWindow extends BasicWindow implements View
 					}
 					else
 					{
-						/////check if the maze name is already inside the database
-						boolean flag = true;
-						/*String [] names = null;
-							BufferedReader reader = null;
-							try {
-								reader = new BufferedReader(new FileReader("names.txt"));
-							} catch (FileNotFoundException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							String line;
-							try 
-							{
-								while ((line = reader.readLine()) != null)
-								{
-									names = line.split("#");
-								}
-							} 
-							catch (IOException ee) 
-							{
-								// TODO Auto-generated catch block
-								ee.printStackTrace();
-							}
-							
-							
-						if(names != null)
+						maze.redraw();
+						solvedAlready = false;
+						hasWonForMusic = false;
+						maze.setX(0);
+						maze.setY(0);
+						String send = "generate maze ";
+						send = send + str;
+						send = send + " " + numR + " " + numC ;
+						setChanged();
+						notifyObservers(send);
+						if(nameInDb == true)
 						{
-							for(String s: names)
+							int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+							MessageBox mb = new MessageBox(shell,style);
+							mb.setMessage("Do you want to load the maze from the database ? If you choose NO the next time"
+									+ " you will write the same name the maze from the database will be loaded.");
+							
+							mb.setText("Name already exist");
+							int rc = mb.open();
+							switch(rc)
 							{
-								if(s.equals(t.getText()))
-								{
-									flag = false;
-								}	
+							case SWT.YES:
+								maze.redraw();
+								solvedAlready = false;
+								hasWonForMusic = false;
+								maze.setX(0);
+								maze.setY(0);
+								String send1 = "generate maze ";
+								send1 = send1 + str;
+								send1 = send1 + " " + numR + " " + numC ;
+								setChanged();
+								notifyObservers(send1);
+							break;
+							case SWT.NO:
+								break;
+							
 							}
-							if(flag == false)
-							{
-								MessageBox mb = new MessageBox(shell,SWT.ICON_ERROR);
-								mb.setText("Error");
-								mb.setMessage("Error! the name is already exists in the database");
-								mb.open();
-							}
-						}*/
-						if(flag == true)
+						}
+						/*else
 						{
 							maze.redraw();
 							solvedAlready = false;
 							hasWonForMusic = false;
 							maze.setX(0);
 							maze.setY(0);
-							//myMaze = new DFSMazeGenerator().generateMaze(numR, numC);
-							String send = "generate maze ";
-							send = send + str;
-							send = send + " " + numR + " " + numC ;
+							String send1 = "generate maze ";
+							send1 = send1 + str;
+							send1 = send1 + " " + numR + " " + numC ;
 							setChanged();
-							notifyObservers(send);
-							if(myMaze!=null)
-							{
-								maze.displayMaze(myMaze);
-								//maze.printBoat();
-								maze.forceFocus();
-							}	
+							notifyObservers(send1);
+						}*/
+						if(myMaze!=null)
+						{
+							maze.displayMaze(myMaze);
+							maze.forceFocus();
 						}
-						
 					}
-					
-					
-					/*maze.displayMaze(new DFSMazeGenerator().generateMaze(numR, numC));
-					maze.forceFocus();*/
 				}
 				else
 				{
@@ -898,6 +890,18 @@ public class StartWindow extends BasicWindow implements View
 	public void setStartSolution(Solution sol) 
 	{
 		sol2=sol;		
+	}
+
+	@Override
+	public void setHasName(boolean value) 
+	{
+		this.nameInDb = value;
+	}
+
+	@Override
+	public boolean getHasName() 
+	{
+		return nameInDb;
 	}
 
 	
