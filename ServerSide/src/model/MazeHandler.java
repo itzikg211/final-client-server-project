@@ -132,6 +132,8 @@ public class MazeHandler extends CommonClientHandler
 					m.setName(str[2]);
 					m.generateMaze(Integer.parseInt(str[3]),Integer.parseInt(str[4]));
 					compressObject(m.getMaze(),outToClient);
+					setChanged();
+					notifyObservers("generating maze");
 					//outToClient.flush();
 				}
 			}

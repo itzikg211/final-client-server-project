@@ -9,5 +9,7 @@ public interface View
 {
 	public void startServer(PropertiesServer pro);
 	public void setClients(HashMap<Integer, Socket> clients);
+	public void setProperties(PropertiesServer ps);
 	public void closeServer();
+	public PropertiesServer getProperties();
 }
