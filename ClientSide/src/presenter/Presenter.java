@@ -119,7 +119,7 @@ public class Presenter implements Observer
 		public void doCommand(String path) throws FileNotFoundException,IOException 
 		{
 			m.stop();
-			System.exit(0);
+	//		System.exit(0);
 		}
 		
 	}

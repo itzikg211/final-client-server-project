@@ -1,4 +1,4 @@
-package viewGUI;
+package model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +11,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 
-import model.MyModel;
 import presenter.Presenter;
 import presenter.Properties;
 import presenter.PropertiesServer;
+import viewGUI.ServerGUI;
 
 public class MyTCPIPServer 
 {
@@ -90,7 +90,7 @@ public class MyTCPIPServer
 		}
 		
 	}
-	private void connectMVP(Socket someClient) 
+	/*private void connectMVP(Socket someClient) 
 	{
 		PropertiesServer pro = null;
 		try 
@@ -113,7 +113,7 @@ public class MyTCPIPServer
 		{
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	public PropertiesServer expandProperties(InputStream instream)
 	{

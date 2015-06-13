@@ -1,4 +1,4 @@
-package viewGUI;
+package model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,10 +7,11 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import model.MyModel;
 import presenter.Presenter;
 import presenter.Properties;
 import presenter.PropertiesServer;
@@ -112,12 +113,13 @@ public class MazeHandler extends CommonClientHandler
 		PropertiesServer pro = null;
 		pro = expandProperties(inFromClient);
 		MyModel m = new MyModel(pro);
-		Presenter p = new Presenter(m,this);
-		m.addObserver(p);
-		this.addObserver(p);
+		//Presenter p = new Presenter(m,this);
+		//m.addObserver(p);
+		//this.addObserver(p);
+		compressObject(m.getNames(), outToClient); 
 		try 
 		{
-			while(true){
+			//while(true){
 			while(!(line = reader.readLine()).equals("exit"))
 			{
 			System.out.println(line);
@@ -158,7 +160,7 @@ public class MazeHandler extends CommonClientHandler
 			//writer.println("ACK");
 			//writer.flush();
 			}
-			}
+			//}
 		} 
 		catch (IOException e) 
 		{
@@ -166,6 +168,7 @@ public class MazeHandler extends CommonClientHandler
 		}
 		try {
 			reader.close();
+			System.out.println("finished communication with client");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

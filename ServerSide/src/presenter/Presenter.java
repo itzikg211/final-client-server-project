@@ -13,10 +13,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.zip.GZIPOutputStream;
 
+import model.ClientHandler;
+import model.CommonClientHandler;
 import model.Model;
 import view.Command;
-import viewGUI.ClientHandler;
-import viewGUI.CommonClientHandler;
 
 public class Presenter implements Observer
 {

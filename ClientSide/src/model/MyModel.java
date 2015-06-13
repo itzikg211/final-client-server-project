@@ -39,7 +39,7 @@ public class MyModel extends Observable implements Model
 	private Solution sol;
 	private String mazeName;
 	private Properties pro;
-	private Socket myServer;
+	private Socket myClient;
 	private PrintWriter outToServer;
 	private String [] names;
 	int nameIsFine;
@@ -58,10 +58,10 @@ public class MyModel extends Observable implements Model
 		executor=Executors.newFixedThreadPool(pro.getThreadNumber());
 		System.out.println("CLIENT SIDE");
 		nameIsFine = 0;
-		myServer = null;
+		myClient = null;
 		try 
 		{
-			myServer = new Socket(pro.getIpAddr(),pro.getPortNumber());
+			myClient = new Socket(pro.getIpAddr(),pro.getPortNumber());
 		} 
 		catch (UnknownHostException e) 
 		{
@@ -76,29 +76,28 @@ public class MyModel extends Observable implements Model
 		}
 		try 
 		{
-			outToServer = new PrintWriter(new OutputStreamWriter(myServer.getOutputStream()));
+			outToServer = new PrintWriter(new OutputStreamWriter(myClient.getOutputStream()));
 		} catch (IOException e1) 
 		{
 			e1.printStackTrace();
 		}
 		try 
 		{
-			compressObject(pro, myServer.getOutputStream());
+			compressObject(pro, myClient.getOutputStream());
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 		}
-		names = new String[1];
-		names[0] = "gogo";
-	/*	try 
+
+		try 
 		{
-			expandNames(myServer.getInputStream());
+			expandNames(myClient.getInputStream());
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	
@@ -211,7 +210,7 @@ public class MyModel extends Observable implements Model
 //						public Solution call() throws Exception 
 //						{		
 							try {
-								expandSolution(myServer.getInputStream());
+								expandSolution(myClient.getInputStream());
 							} catch (IOException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -360,7 +359,7 @@ public class MyModel extends Observable implements Model
 			nameIsFine = 0;
 			try 
 			{
-				expandMaze(myServer.getInputStream());
+				expandMaze(myClient.getInputStream());
 			} catch (IOException e1) 
 			{
 				e1.printStackTrace();
@@ -396,7 +395,7 @@ public class MyModel extends Observable implements Model
 //					public Solution call() throws Exception 
 //					{
 						try {
-							expandSolution(myServer.getInputStream());
+							expandSolution(myClient.getInputStream());
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -442,7 +441,7 @@ public class MyModel extends Observable implements Model
 			//inFromServer.close();
 			//inFromUser.close();
 			//outToServer.close();
-			myServer.close();
+			myClient.close();
 		} 
 		catch (IOException e) 
 		{

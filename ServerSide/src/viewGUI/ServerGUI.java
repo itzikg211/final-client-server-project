@@ -3,6 +3,9 @@ package viewGUI;
 import java.net.Socket;
 import java.util.HashMap;
 
+import model.MazeHandler;
+import model.MyTCPIPServer;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
