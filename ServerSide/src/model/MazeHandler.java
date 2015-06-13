@@ -7,125 +7,31 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import presenter.Presenter;
 import presenter.Properties;
 import presenter.PropertiesServer;
 
 public class MazeHandler extends CommonClientHandler
 {
-	/*@Override
-	public void handleClient(InputStream inFromClient, OutputStream outToClient) 
-	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inFromClient));
-		String line = null;
-		PropertiesServer pro = null;
-		pro = expandProperties(inFromClient);
-		MyModel m = new MyModel(pro);
-		Presenter p = new Presenter(m,this);
-		m.addObserver(p);
-		this.addObserver(p);
-		p.setOutToClient(outToClient);
-		try 
-		{
-			while(!(line = reader.readLine()).equals("exit"))
-			{
-					System.out.println(line);
-					setChanged();
-					notifyObservers(line);	
-			}
-		} 
-		catch (IOException e) 
-		{
-			 e.printStackTrace();
-		}
-		try 
-		{
-			reader.close();
-			System.out.println("finished communication with the client");
-		} catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public PropertiesServer expandProperties(InputStream instream)
-	{
-		PropertiesServer pro = new PropertiesServer();
-		GZIPInputStream gs = null;
-		try 
-		{
-			gs = new GZIPInputStream(instream);
-		} 
-		catch (IOException e) 
-		{
-			
-			e.printStackTrace();
-		}
-		ObjectInputStream ois = null;
-		try 
-		{
-			ois = new ObjectInputStream(gs);
-		} 
-		catch (IOException e) 
-		{
-			
-			e.printStackTrace();
-		}
-		try 
-		{
-			//reading the properties from the client
-			Properties proc = (Properties) ois.readObject();
-			//setting up the properties of the client
-			pro.setDiagonal(proc.getDiagonal());
-			pro.setMazeSolver(proc.getMazeSolver());
-			pro.setMazeGenerator(proc.getMazeGenerator());
-			pro.setDiagonalMovementCost(proc.getDiagonalMovementCost());
-			pro.setView(proc.getView());
-			pro.setMovementCost(proc.getMovementCost());
-		} 
-		catch (ClassNotFoundException e) 
-		{
-			
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-			
-			e.printStackTrace();
-		} 
-		return pro;
-	}*/
-	
-	
 	@Override
 	public void handleClient(InputStream inFromClient, OutputStream outToClient) 
 	{
-		//need to do this part :) TODO
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inFromClient));
-		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(outToClient));
 		String line = null;
 		PropertiesServer pro = null;
 		pro = expandProperties(inFromClient);
 		MyModel m = new MyModel(pro);
-		//Presenter p = new Presenter(m,this);
-		//m.addObserver(p);
-		//this.addObserver(p);
 		compressObject(m.getNames(), outToClient); 
 		try 
 		{
-			//while(true){
 			while(!(line = reader.readLine()).equals("exit"))
 			{
 			System.out.println(line);
 			String[] str = line.split(" ");
 			//check if client requested for a maze
-			if(str.length == 5)
+			if(line.startsWith("generate maze"))
 			{
 				if(str[0].equals("generate") && str[1].equals("maze"))
 				{
@@ -134,7 +40,6 @@ public class MazeHandler extends CommonClientHandler
 					compressObject(m.getMaze(),outToClient);
 					setChanged();
 					notifyObservers("generating maze");
-					//outToClient.flush();
 				}
 			}
 			//check if client requested for a solution of the maze
@@ -158,21 +63,18 @@ public class MazeHandler extends CommonClientHandler
 					compressObject(m.getSolution(str[3]),outToClient);
 				}
 			}
-			
-			//writer.println("ACK");
-			//writer.flush();
 			}
-			//}
 		} 
 		catch (IOException e) 
 		{
 			 e.printStackTrace();
 		}
-		try {
+		try 
+		{
 			reader.close();
 			System.out.println("finished communication with client");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		
@@ -181,44 +83,47 @@ public class MazeHandler extends CommonClientHandler
 	public void compressObject(Object objectToCompress, OutputStream outstream)
 	{
 		GZIPOutputStream gz = null;
-		try {
+		try 
+		{
 			gz = new GZIPOutputStream(outstream);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+		} 
+		catch (IOException e1) 
+		{
 			e1.printStackTrace();
 		}
 		ObjectOutputStream oos = null;
-		try {
+		try 
+		{
 			oos = new ObjectOutputStream(gz);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+		} 
+		catch (IOException e1) 
+		{
 			e1.printStackTrace();
 		}
-		try {
-			try {
+		try 
+		{
+			try 
+			{
 				oos.writeObject(objectToCompress);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 			try {
 				oos.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 			}		
 		finally 
 		{
-	    try {
-			//oos.close();
-			//gz.flush();
-			//outstream.flush();
-			//gz.close();
+	    try 
+	    {
 			gz.finish();
-			//outstream.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} 
+	    catch (IOException e) 
+	    {
 			e.printStackTrace();
 		}
 	   }

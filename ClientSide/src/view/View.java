@@ -19,7 +19,7 @@ public interface View {
 	 */
 	Command getUserCommand(); 
 	/**
-	 * Dispplays the selected maze
+	 * Displays the selected maze
 	 * @param m the selected maze
 	 */
 	void displayMaze(Maze m); 

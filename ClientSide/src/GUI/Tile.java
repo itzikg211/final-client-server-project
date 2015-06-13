@@ -18,10 +18,9 @@ import org.eclipse.swt.widgets.Composite;
  
 public class Tile extends Canvas
 {
-	private Image beforeImage;
 	private Image tileImg;
 	private int clickI,clickJ,unclickI,unclickJ;
-	private int a,b,temp1,temp2,mouseDir;
+	private int temp1,temp2;
 	private Image arrowImage;
 	private Boat boat;
 	private Image boatImg;
@@ -55,6 +54,15 @@ public class Tile extends Canvas
 			        	ImageData data1 = galgal.getImageData();
 			        	e.gc.drawImage(galgal,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
 			        }
+			        if(circle == true)
+			        {
+			        	//e.gc.setForeground(new Color(null,255,200,0));
+			        	/*e.gc.setBackground(new Color(null,200,100,0));
+						e.gc.fillOval(width/3, height/3, width/3, height/3);*/
+			        	//e.gc.drawLine(0, 0, width, height);
+			        	ImageData data1 = arrowImage.getImageData();
+			        	e.gc.drawImage(arrowImage,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
+			        }
 			        if(boatImg!=null)
 			        {
 			        	ImageData data1 = boatImg.getImageData();
@@ -66,19 +74,10 @@ public class Tile extends Canvas
 			        	ImageData data1 = new Image(null, "resources/boat-right.png").getImageData();
 			        	e.gc.drawImage(new Image(null, "resources/boat-right.png"),0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));
 			        }
-			        if(circle == true)
-			        {
-			        	//e.gc.setForeground(new Color(null,255,200,0));
-						/*e.gc.setBackground(new Color(null,200,100,0));
-						e.gc.fillOval(width/3, height/3, width/3, height/3);*/
-			        	//e.gc.drawLine(0, 0, width, height);
-			        	ImageData data1 = arrowImage.getImageData();
-			        	e.gc.drawImage(arrowImage,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
-			        }
 			        if(finalImg == true)
 			        {
 			        	ImageData data1 = new Image(null, "resources/final.png").getImageData();
-			        	e.gc.drawImage(new Image(null, "resources/final.png"),0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));
+			        	e.gc.drawImage(new Image(null, "resources/final.png"),0,0,data1.width,data1.height,(int)(width/20),(int)(height/20),(int)(width*1),(int)(height*1));
 			        }
 			}
 		});
@@ -88,7 +87,6 @@ public class Tile extends Canvas
 			@Override
 			public void mouseUp(MouseEvent arg0) //when you leave the mouse 
 			{
-				// TODO Auto-generated method stub
 				int a = getDisplay().getCursorLocation().x;
 				int b = getDisplay().getCursorLocation().y;
 				unclickI = a;
@@ -103,13 +101,11 @@ public class Tile extends Canvas
 				{
 					if(clickI < unclickI)//right
 					{
-						mouseDir = 1;
 						System.out.println("Dir is RIGHT");
 						boat.dragBoat(1);
 					}
 					if(clickI > unclickI)//left
 					{
-						mouseDir = 3;
 						System.out.println("Dir is LEFT");
 						boat.dragBoat(3);
 					}
@@ -118,13 +114,11 @@ public class Tile extends Canvas
 				{
 					if(clickJ > unclickJ)//up
 					{
-						mouseDir = 0;
 						System.out.println("Dir is UP");
 						boat.dragBoat(0);
 					}
 					if(clickJ < unclickJ)//down
 					{
-						mouseDir = 2;
 						System.out.println("Dir is DOWN");
 						boat.dragBoat(2);
 					}
@@ -132,7 +126,6 @@ public class Tile extends Canvas
 			}
 			@Override
 			public void mouseDown(MouseEvent arg0) { //when you press the mouse
-				// TODO Auto-generated method stub
 				
 				int a = getDisplay().getCursorLocation().x;
 				int b = getDisplay().getCursorLocation().y;
@@ -144,9 +137,8 @@ public class Tile extends Canvas
 			}
 			
 			@Override
-			public void mouseDoubleClick(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void mouseDoubleClick(MouseEvent arg0) 
+			{
 			}
 		});
 		
@@ -165,9 +157,6 @@ public class Tile extends Canvas
 			this.tileImg.dispose();*/
 		temp1=0;
 		temp2=0;
-		a=0;
-		b=0;
-		
 		this.tileImg=image;
 		redraw();
 	}
@@ -187,7 +176,6 @@ public class Tile extends Canvas
 	 */
 	public void setBeforeImage(Image image)
 	{
-		this.beforeImage=image;
 	}
 	/**
 	 * 

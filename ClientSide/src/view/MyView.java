@@ -94,36 +94,32 @@ public class MyView extends Observable implements View {
 	 * @param m the selected maze
 	 */
 	@Override
-	public void setGuiMaze(Maze m) {
-		// TODO Auto-generated method stub
-		
+	public void setGuiMaze(Maze m) 
+	{
 	}
 	/**
 	 * sets the solution data member
 	 * @param s the selected solution
 	 */
 	@Override
-	public void setSolution(Solution s) {
-		// TODO Auto-generated method stub
-		
+	public void setSolution(Solution s) 
+	{
 	}
 	/**
 	 * Sets the solution data member that starts in the selected position
 	 * @param sol String that states the first position of the solution
 	 */
 	@Override
-	public void setStartSolution(Solution sol) {
-		// TODO Auto-generated method stub
-		
+	public void setStartSolution(Solution sol) 
+	{
 	}
 	@Override
-	public void setHasName(boolean value) {
-		// TODO Auto-generated method stub
-		
+	public void setHasName(boolean value) 
+	{
 	}
 	@Override
-	public boolean getHasName() {
-		// TODO Auto-generated method stub
+	public boolean getHasName() 
+	{
 		return false;
 	}
 	

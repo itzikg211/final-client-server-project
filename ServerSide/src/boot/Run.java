@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import model.MazeHandler;
-import model.MyModel;
 import presenter.Presenter;
 import presenter.PropertiesServer;
 import viewGUI.ServerGUI;
@@ -15,8 +14,6 @@ public class Run
 
 	public static void main(String[] args) 
 	{
-		
-		//System.out.println("GOOD");
 		PropertiesServer pro = readProperties();
 		ServerGUI sgui = new ServerGUI("Server",500,500);
 		MazeHandler m = new MazeHandler();

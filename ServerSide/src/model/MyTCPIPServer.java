@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 
-import presenter.Presenter;
 import presenter.Properties;
 import presenter.PropertiesServer;
 import viewGUI.ServerGUI;
@@ -56,18 +55,13 @@ public class MyTCPIPServer
 						@Override
 						public void run() 
 						{
-							// TODO Auto-generated method stub
 							try 
 							{
-								//connectMVP(someClient);
 								ch.handleClient(someClient.getInputStream(),someClient.getOutputStream());			
-								//someClient.getOutputStream().close();
-								//someClient.getInputStream().close();
 								someClient.close();
 							} 
 							catch (IOException e) 
 							{
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 							
@@ -83,85 +77,17 @@ public class MyTCPIPServer
 		{
 			e.printStackTrace();
 		}
-		try {
+		try 
+		{
 			myServer.close();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		
 	}
-	/*private void connectMVP(Socket someClient) 
-	{
-		PropertiesServer pro = null;
-		try 
-		{
-			pro = expandProperties(someClient.getInputStream());
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		MyModel m = new MyModel(pro);
-		Presenter p = new Presenter(m,ch);
-		m.addObserver(p);
-		ch.addObserver(p);
-		try 
-		{
-			p.setOutToClient(someClient.getOutputStream());
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-	}*/
 	
-	public PropertiesServer expandProperties(InputStream instream)
-	{
-		PropertiesServer pro = new PropertiesServer();
-		GZIPInputStream gs = null;
-		try 
-		{
-			gs = new GZIPInputStream(instream);
-		} 
-		catch (IOException e) 
-		{
-			
-			e.printStackTrace();
-		}
-		ObjectInputStream ois = null;
-		try 
-		{
-			ois = new ObjectInputStream(gs);
-		} 
-		catch (IOException e) 
-		{
-			
-			e.printStackTrace();
-		}
-		try 
-		{
-			//reading the properties from the client
-			Properties proc = (Properties) ois.readObject();
-			//setting up the properties of the client
-			pro.setDiagonal(proc.getDiagonal());
-			pro.setMazeSolver(proc.getMazeSolver());
-			pro.setMazeGenerator(proc.getMazeGenerator());
-			pro.setDiagonalMovementCost(proc.getDiagonalMovementCost());
-			pro.setView(proc.getView());
-			pro.setMovementCost(proc.getMovementCost());
-			
-		} 
-		catch (ClassNotFoundException e) 
-		{
-			
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-			
-			e.printStackTrace();
-		} 
-		return pro;
-	}
+	
 	 
 }

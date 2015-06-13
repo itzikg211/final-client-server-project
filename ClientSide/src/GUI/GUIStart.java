@@ -1,9 +1,5 @@
 package GUI;
 
-import java.beans.XMLDecoder;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import model.MyModel;
 
 import org.eclipse.swt.SWT;
@@ -13,9 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 
 import presenter.Presenter;
 import presenter.Properties;
@@ -110,8 +104,6 @@ public class GUIStart extends BasicWindow
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) 
 			{
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		

@@ -1,10 +1,5 @@
 package presenter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -13,10 +8,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.zip.GZIPOutputStream;
 
-import model.ClientHandler;
-import model.CommonClientHandler;
 import model.MazeHandler;
-import model.Model;
 import model.MyTCPIPServer;
 import view.Command;
 import viewGUI.View;

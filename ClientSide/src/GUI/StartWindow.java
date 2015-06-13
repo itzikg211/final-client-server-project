@@ -2,13 +2,10 @@ package GUI;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 
 import javax.sound.sampled.AudioInputStream;
@@ -21,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -66,6 +62,7 @@ public class StartWindow extends BasicWindow implements View
 	boolean nameInDb;
 	boolean solvedAlready;
 	boolean hasWonForMusic;
+	boolean canGetHint;
 	/**
 	 * Constructs the start window 
 	 * @param title the title of the start window
@@ -78,8 +75,7 @@ public class StartWindow extends BasicWindow implements View
 		properties = new Properties();
 		solvedAlready = false;
 		nameInDb = true;
-		//BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		//PrintWriter writer = new PrintWriter(System.out);
+		canGetHint = true;
 	}
 
 	@Override
@@ -107,8 +103,6 @@ public class StartWindow extends BasicWindow implements View
 	@Override
 	public void displayMaze(Maze m) 
 	{
-		//need to complete TODO
-		
 	}
 	/**
 	 * Sets the hashmap of commands in the view
@@ -117,8 +111,6 @@ public class StartWindow extends BasicWindow implements View
 	@Override
 	public void displaySolution(Solution s) 
 	{
-		//need to complete TODO
-		
 	}
 	
 	public void setChangedFunc()
@@ -293,9 +285,8 @@ public class StartWindow extends BasicWindow implements View
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 		/**
@@ -318,9 +309,8 @@ public class StartWindow extends BasicWindow implements View
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 		/**
@@ -340,11 +330,11 @@ public class StartWindow extends BasicWindow implements View
 				} 
 				catch (FileNotFoundException e1) 
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				xmle.flush();
 				xmle.close();
+				canGetHint = true;
 				if(numR != 0 && numC != 0)
 				{
 					
@@ -396,19 +386,6 @@ public class StartWindow extends BasicWindow implements View
 							
 							}
 						}
-						/*else
-						{
-							maze.redraw();
-							solvedAlready = false;
-							hasWonForMusic = false;
-							maze.setX(0);
-							maze.setY(0);
-							String send1 = "generate maze ";
-							send1 = send1 + str;
-							send1 = send1 + " " + numR + " " + numC ;
-							setChanged();
-							notifyObservers(send1);
-						}*/
 						if(myMaze!=null)
 						{
 							maze.displayMaze(myMaze);
@@ -434,35 +411,37 @@ public class StartWindow extends BasicWindow implements View
 		/**
 		 * handles the hint button that the user asks for
 		 */
-		hint.addSelectionListener(new SelectionListener() {
+		hint.addSelectionListener(new SelectionListener() 
+		{
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0)
 			{
-				String str = "hint " + maze.getX() + " " + maze.getY();
-				System.out.println("hint str : " + str);
-				setChanged();
-				notifyObservers(str);
-				//put the relevant string representing the current state here
-				if(sol2!=null)
+				if(canGetHint)
 				{
-					sol2.displaySolution();
-					int size = sol2.getList().size();
-					int j = sol2.SolutionToArray().get(size*2-3);
-					int i = sol2.SolutionToArray().get(size*2-4);
-					maze.setHint(i, j);					
-					maze.forceFocus();
+					String str = "hint " + maze.getX() + " " + maze.getY();
+					System.out.println("hint str : " + str);
+					setChanged();
+					notifyObservers(str);
+					//put the relevant string representing the current state here
+					if(sol2!=null)
+					{
+						sol2.displaySolution();
+						int size = sol2.getList().size();
+						int j = sol2.SolutionToArray().get(size*2-3);
+						int i = sol2.SolutionToArray().get(size*2-4);
+						maze.setHint(i, j);					
+						maze.forceFocus();
+					}
+					else
+						System.out.println("The hint solution is null");
 				}
-				else
-					System.out.println("The hint solution is null");
-
 				
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 		/**
@@ -510,59 +489,21 @@ public class StartWindow extends BasicWindow implements View
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
-	
-		
-		
-	maze.addMouseListener(new MouseListener() {
-		
-		public void mouseUp(MouseEvent arg0) //when you leave the mouse 
-		{
-			// TODO Auto-generated method stub
-			int a = maze.getDisplay().getCursorLocation().x;
-			int b = maze.getDisplay().getCursorLocation().y;
-			String pos = "leave position : " + a + "," + b;
-			/*if(a==clickI && b==clickJ)
-			{
-				System.out.println("mouse didnt move!");
-			}*/
-			System.out.println(pos);
-		}
-		
-		@Override
-		public void mouseDown(MouseEvent arg0) { //when you press the mouse
-			// TODO Auto-generated method stub
-			
-			int a = maze.getDisplay().getCursorLocation().x;
-			int b = maze.getDisplay().getCursorLocation().y;
-			//clickI=a;
-			//clickJ=b;
-			String pos = "click position : " + a + "," + b;
-			System.out.println(pos);
-			
-		}
-		
-		@Override
-		public void mouseDoubleClick(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-	});
-		
-		
 		MessageBox m = new MessageBox(shell);
 		m.setText("You finished");
 		/**
 		 * handles the user's key events
 		 */
-		maze.addKeyListener(new KeyListener(){
+		maze.addKeyListener(new KeyListener()
+		{
 			//Boat b = new Boat();
 			@Override
-			public void keyPressed(KeyEvent e) {
+			public void keyPressed(KeyEvent e) 
+			{
 				
 				System.out.println("Place : "+maze.getX()+","+maze.getY());
 				if(e.keyCode == SWT.ESC)
@@ -691,6 +632,7 @@ public class StartWindow extends BasicWindow implements View
 				{
 					if(maze.getX()==maze.mazeR-1 & maze.getY()==maze.mazeC-1)
 					{
+						canGetHint = false;
 						File file = new File("resources/music/winnerMusic.wav");
 						AudioInputStream stream;
 						Clip clip;
@@ -747,8 +689,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) 
 			{
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		/**
@@ -774,7 +714,6 @@ public class StartWindow extends BasicWindow implements View
 				} 
 				catch (FileNotFoundException e1) 
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
@@ -796,7 +735,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) 
 			{
-				// TODO Auto-generated method stub
 			}
 		});
 		/**
@@ -815,8 +753,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) 
 			{
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		/**
@@ -839,8 +775,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0)
 			{
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		

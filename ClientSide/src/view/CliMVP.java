@@ -22,8 +22,6 @@ public class CliMVP extends CLI implements Runnable{
 	public CliMVP(BufferedReader in, PrintWriter out) 
 	{
 		super(in, out);
-		
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * Setting the hash map in the class to the injected hashmap

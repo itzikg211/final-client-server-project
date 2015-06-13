@@ -20,19 +20,6 @@ public class PropertiesServer implements Serializable {
 	/**
 	 * enums to match the users' selscetion
 	 */
-	/*public enum MazeGenerator 
-	{
-		DFS_ALGO,RANDOM_ALGO
-	};
-	
-	public enum MazeSolver 
-	{
-		ASTAR_MANHATTAN_DISTANCE,ASTAR_AIR_DISTANCE,BFS_DIAGONAL,BFS_NO_DIAGONAL
-	};
-	public enum WayOfDisplay
-	{
-		GUI,ECLIPSE_CONSOLE
-	};*/
 	private int threadNumber;
 	private MazeSolver mazeSolver;
 	private MazeGenerator mazeGenerator;
