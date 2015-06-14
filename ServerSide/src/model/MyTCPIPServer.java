@@ -1,18 +1,13 @@
 package model;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.zip.GZIPInputStream;
 
-import presenter.Properties;
-import presenter.PropertiesServer;
 import viewGUI.ServerGUI;
 
 public class MyTCPIPServer 

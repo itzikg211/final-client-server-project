@@ -59,6 +59,7 @@ public class StartWindow extends BasicWindow implements View
 	Solution sol;
 	Solution sol2;
 	Boat b;
+	int moveCounter = 0;
 	boolean nameInDb;
 	boolean solvedAlready;
 	boolean hasWonForMusic;
@@ -346,6 +347,13 @@ public class StartWindow extends BasicWindow implements View
 						m2.setMessage("You didnt input maze's name");
 						m2.open();
 					}
+					else if(str.contains(" "))
+					{
+						MessageBox m2 = new MessageBox(shell);
+						m2.setText("BAD INPUT");
+						m2.setMessage("The maze's name cant incluse a space");
+						m2.open();
+					}
 					else
 					{
 						maze.redraw();
@@ -530,9 +538,11 @@ public class StartWindow extends BasicWindow implements View
 					System.out.println("UP");
 					if(maze.canMove(maze.getX(),maze.getY(), 0))
 					{
+						moveCounter++;
 						System.out.println("CAN MOVE");
 						maze.setDir(0);
-						maze.setBoatPosition(maze.getX()-1,maze.getY());						
+						maze.setBoatPosition(maze.getX()-1,maze.getY());	
+						
 					}
 					else
 						System.out.println("CAN NOT MOVE");
@@ -544,9 +554,11 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("down");
 				if(maze.canMove(maze.getX(),maze.getY(), 2))
 				{
+					moveCounter++;
 					System.out.println("CAN MOVE");
 					maze.setDir(2);
 					maze.setBoatPosition(maze.getX()+1,maze.getY());
+					
 				}
 				else
 					System.out.println("CAN NOT MOVE");
@@ -556,6 +568,7 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("left");
 				if(maze.canMove(maze.getX(),maze.getY(), 3))
 				{
+					moveCounter++;
 					System.out.println("CAN MOVE");
 					maze.setDir(3);
 					maze.setBoatPosition(maze.getX(),maze.getY()-1);
@@ -568,6 +581,7 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("right");
 				if(maze.canMove(maze.getX(),maze.getY(), 1))
 				{
+					moveCounter++;
 					System.out.println("CAN MOVE");
 					maze.setDir(1);
 					maze.setBoatPosition(maze.getX(),maze.getY()+1);
@@ -581,6 +595,7 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("UP-LEFT");
 				if(maze.canMove(maze.getX(),maze.getY(), 4))
 				{
+					moveCounter++;
 					System.out.println("CAN MOVE");
 					maze.setDir(3);
 					maze.setBoatPosition(maze.getX()-1,maze.getY()-1);						
@@ -593,6 +608,7 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("UP-RIGHT");
 				if(maze.canMove(maze.getX(),maze.getY(), 5))
 				{
+					moveCounter++;
 					System.out.println("CAN MOVE");
 					maze.setDir(1);
 					maze.setBoatPosition(maze.getX()-1,maze.getY()+1);						
@@ -605,6 +621,7 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("DOWN-LEFT");
 				if(maze.canMove(maze.getX(),maze.getY(), 6))
 				{
+					moveCounter++;
 					System.out.println("CAN MOVE");
 					maze.setDir(3);
 					maze.setBoatPosition(maze.getX()+1,maze.getY()-1);						
@@ -617,6 +634,7 @@ public class StartWindow extends BasicWindow implements View
 				System.out.println("DOWN-RIGHT");
 				if(maze.canMove(maze.getX(),maze.getY(), 7))
 				{
+					moveCounter++;
 					System.out.println("CAN MOVE");
 					maze.setDir(1);
 					maze.setBoatPosition(maze.getX()+1,maze.getY()+1);						
@@ -651,7 +669,8 @@ public class StartWindow extends BasicWindow implements View
 						    ex.printStackTrace();
 						}
 						System.out.println("FINISHED!");
-						m.setMessage("Congrats! you finished the maze!");
+						
+						m.setMessage("Congrats! you finished the maze in " + moveCounter + " steps!");
 						m.open();
 					}
 				

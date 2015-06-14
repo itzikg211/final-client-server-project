@@ -47,7 +47,7 @@ public class Presenter implements Observer
 				String[] temp = str.split(" ");
 				int ID = Integer.parseInt(temp[2]);
 				System.out.println("PRESENTER : CLIENT " + ID + " ADDED!");
-				v.addClient(ID);
+				
 			}
 			if(str.equals("generating maze"))
 			{

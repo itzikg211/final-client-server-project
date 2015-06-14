@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -18,45 +17,30 @@ import presenter.PropertiesServer;
 public class MazeHandler extends CommonClientHandler
 {
 
-	int ClientID=0;
-	Socket client;
-	HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
-	
-	
-	
 	@Override
-	public void handleClient(Socket client) 
+	public void handleClient(Socket s) 
 	{
-
-		InputStream inFromClient=null;
-		try 
-		{
-			inFromClient = client.getInputStream();
-		} 
-		catch (IOException e1) 
-		{
+		InputStream inFromClient = null;
+		try {
+			inFromClient = s.getInputStream();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		OutputStream outToClient = null;
-		try 
-		{
-			outToClient = client.getOutputStream();
-		} 
-		catch (IOException e1) 
-		{
+		try {
+			outToClient = s.getOutputStream();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		ClientID++;
-		clients.put(ClientID, client);
-		String str2 = "client added " + ClientID;
-		setChanged();
-		notifyObservers(str2);
+		//need to do this part :) TODO
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inFromClient));
+		PropertiesServer pro = expandProperties(inFromClient);
+		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(outToClient));
 		String line = null;
-		PropertiesServer pro = null;
-		pro = expandProperties(inFromClient);
 		MyModel m = new MyModel(pro);
-		compressObject(m.getNames(), outToClient); 
+		compressObject(m.getNames(), outToClient);
 		try 
 		{
 			while(!(line = reader.readLine()).equals("exit"))
@@ -64,15 +48,14 @@ public class MazeHandler extends CommonClientHandler
 			System.out.println(line);
 			String[] str = line.split(" ");
 			//check if client requested for a maze
-			if(line.startsWith("generate maze"))
+			if(str.length == 5)
 			{
 				if(str[0].equals("generate") && str[1].equals("maze"))
 				{
 					m.setName(str[2]);
 					m.generateMaze(Integer.parseInt(str[3]),Integer.parseInt(str[4]));
 					compressObject(m.getMaze(),outToClient);
-					setChanged();
-					notifyObservers("generating maze");
+					//outToClient.flush();
 				}
 			}
 			//check if client requested for a solution of the maze
@@ -80,8 +63,6 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("solve") && str[1].equals("maze"))
 				{
-					setChanged();
-					notifyObservers("solving maze");
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(),outToClient);
@@ -93,81 +74,75 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("hint") && str[1].equals("maze"))
 				{
-					setChanged();
-					notifyObservers("putting hint");
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(str[3]),outToClient);
 				}
 			}
+			
+			//writer.println("ACK");
+			//writer.flush();
 			}
 		} 
 		catch (IOException e) 
 		{
 			 e.printStackTrace();
 		}
-		try 
-		{
+		try {
 			reader.close();
-			System.out.println("finished communication with client");
-		} catch (IOException e) 
-		{
-			setChanged();
-			String send = "remove client";
-			notifyObservers(send);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}
 	
-	
 	public void compressObject(Object objectToCompress, OutputStream outstream)
 	{
 		GZIPOutputStream gz = null;
-		try 
-		{
+		try {
 			gz = new GZIPOutputStream(outstream);
-		} 
-		catch (IOException e1) 
-		{
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		ObjectOutputStream oos = null;
-		try 
-		{
+		try {
 			oos = new ObjectOutputStream(gz);
-		} 
-		catch (IOException e1) 
-		{
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		try 
-		{
-			try 
-			{
+		try {
+			try {
 				oos.writeObject(objectToCompress);
-			} catch (IOException e) 
-			{
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
 				oos.flush();
-			} catch (IOException e) 
-			{
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			}		
 		finally 
 		{
-	    try 
-	    {
+	    try {
+			//oos.close();
+			//gz.flush();
+			//outstream.flush();
+			//gz.close();
 			gz.finish();
-		} 
-	    catch (IOException e) 
-	    {
+			//outstream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	   }
 	}
+	
 	
 	public PropertiesServer expandProperties(InputStream instream)
 	{
@@ -217,8 +192,6 @@ public class MazeHandler extends CommonClientHandler
 		} 
 		return pro;
 	}
-
-
 	
-	
+
 }
