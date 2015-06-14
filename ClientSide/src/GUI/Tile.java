@@ -79,7 +79,7 @@ public class Tile extends Canvas
 			        if(finalImg == true)
 			        {
 			        	ImageData data1 = new Image(null, "resources/final.png").getImageData();
-			        	e.gc.drawImage(new Image(null, "resources/final.png"),0,0,data1.width,data1.height,(int)(width/20),(int)(height/20),(int)(width*1),(int)(height*1));
+			        	e.gc.drawImage(new Image(null, "resources/final.png"),0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));
 			        }
 			}
 		});

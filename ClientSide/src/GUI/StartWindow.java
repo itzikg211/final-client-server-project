@@ -248,7 +248,7 @@ public class StartWindow extends BasicWindow implements View
 		{
 		      public void handleEvent(Event event) 
 		      {
-					int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+					int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO | SWT.APPLICATION_MODAL;
 					MessageBox mb = new MessageBox(shell,style);
 					mb.setMessage("Exit the game ?");
 					mb.setText("Confirm Exit");
@@ -256,11 +256,13 @@ public class StartWindow extends BasicWindow implements View
 					switch(rc)
 					{
 					case SWT.YES:
+						event.doit = true;
 						setChanged();
 						notifyObservers("finish");
 						display.dispose();				
 					break;
 					case SWT.NO:
+						event.doit = false;
 						break;
 					}
 		      }

@@ -10,6 +10,9 @@ import java.util.zip.GZIPOutputStream;
 
 import model.MazeHandler;
 import model.MyTCPIPServer;
+
+import org.eclipse.swt.widgets.Display;
+
 import view.Command;
 import viewGUI.View;
 
@@ -30,13 +33,14 @@ public class Presenter implements Observer
 	{
 		if(arg0==v)
 		{
-			String str = (String)arg1;
-			if(str.equals("start server"))
+			String str2 = (String)arg1;
+			if(str2.equals("start server"))
 			{
 				System.out.println("STARTING THE SERVER.....");
 				MyTCPIPServer start = new MyTCPIPServer(v.getProperties().getPortNumber(),m);
 				start.startServer(v.getProperties().getNumOfClients());
 			}
+			//if(str2.startsWith(""))
 		}
 		if(arg0==m)
 		{
@@ -46,20 +50,51 @@ public class Presenter implements Observer
 			{
 				String[] temp = str.split(" ");
 				int ID = Integer.parseInt(temp[2]);
-				System.out.println("PRESENTER : CLIENT " + ID + " ADDED!");
+				System.out.println("PRESENTER : THE ID IS : " + ID);
+				new Thread(new Runnable() {
+				      public void run() {
+				             Display.getDefault().asyncExec(new Runnable() {
+				               public void run() {
+				            	   v.addClient(ID);
+				               }
+				            });
+				         }
+				      }
+				   ).start();
 				
 			}
-			if(str.equals("generating maze"))
+			else if(str.startsWith("remove client"))
 			{
-				System.out.println("PRESENTER : GENERATING MAZE");
+				String[] temp = str.split(" ");
+				int ID = Integer.parseInt(temp[2]);
+				new Thread(new Runnable() {
+				      public void run() {
+				             Display.getDefault().asyncExec(new Runnable() {
+				               public void run() {
+				            	   v.removeClient(ID);
+				               }
+				            });
+				         }
+				      }
+				   ).start();
 			}
-			if(str.equals("solving maze"))
+			else
 			{
-				System.out.println("PRESENTER : SOLVING MAZE");
-			}
-			if(str.equals("putting hint"))
-			{
-				System.out.println("PRESENTER : HINT ");
+				String status;
+				String[] temp = str.split(" ");
+				status = temp[0] + " " + temp[1];
+				int clientID = Integer.parseInt(temp[2]);
+				//System.out.println("PRESENTER : GENERATING MAZE");
+				new Thread(new Runnable() {
+				      public void run() {
+				             Display.getDefault().asyncExec(new Runnable() {
+				               public void run() {
+				            	   v.setStatus(clientID, status);
+				               }
+				            });
+				         }
+				      }
+				   ).start();
 			}
 			
 		}

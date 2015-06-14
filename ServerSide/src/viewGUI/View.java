@@ -14,4 +14,5 @@ public interface View
 	public PropertiesServer getProperties();
 	public void addClient(int ID);
 	public void setStatus(int ID,String status);
+	public void removeClient(int ID);
 }

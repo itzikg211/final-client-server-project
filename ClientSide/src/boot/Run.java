@@ -18,7 +18,7 @@ public class Run {
 	public static void main(String[] args) 
 	{
 		
-		GUIStart gui = new GUIStart("Start",1000,800);
+		GUIStart gui = new GUIStart("Start",1200,790);
 		gui.run();
 	}
 	/**

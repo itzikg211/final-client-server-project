@@ -295,12 +295,14 @@ public class MyModel extends Observable implements Model
         			ms2.setStartState(s);
         			BFS sol3 = new BFS();
         			sol = sol3.search(ms2);
+        			break;
 			case BFS_NO_DIAGONAL:
             		System.out.println("\nSolution BFS without diagonals");
             		MazeSearch ms1 = new MazeSearch(maze,false);
             		ms1.setStartState(s);
             		BFS sol2 = new BFS();
             		sol = sol2.search(ms1);
+            		break;
 			case ASTAR_MANHATTAN_DISTANCE:
                 	notifyObservers("\nSolution A* without diagonals");
         			MazeSearch ams1 = new MazeSearch(maze,false);
@@ -308,6 +310,7 @@ public class MyModel extends Observable implements Model
         			AStar sol5 = new AStar();
         			sol5.setH(new MazeManhattanDistance());
         			sol = sol5.search(ams1);
+        			break;
 			case ASTAR_AIR_DISTANCE:
             		System.out.println("\nSolution A* with diagonals");
             		MazeSearch ams2 = new MazeSearch(maze,true);
@@ -315,6 +318,7 @@ public class MyModel extends Observable implements Model
             		AStar sol7 = new AStar();
             		sol7.setH(new MazeAirDistance());
             		sol = sol7.search(ams2);
+            		break;
 			}
 		}
 		return sol;
