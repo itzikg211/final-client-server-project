@@ -42,10 +42,26 @@ public class Presenter implements Observer
 		{
 			System.out.println("Getting a message from client handler");
 			String str = (String)arg1;
+			if(str.startsWith("client added"))
+			{
+				String[] temp = str.split(" ");
+				int ID = Integer.parseInt(temp[2]);
+				System.out.println("PRESENTER : CLIENT " + ID + " ADDED!");
+				v.addClient(ID);
+			}
 			if(str.equals("generating maze"))
 			{
 				System.out.println("PRESENTER : GENERATING MAZE");
 			}
+			if(str.equals("solving maze"))
+			{
+				System.out.println("PRESENTER : SOLVING MAZE");
+			}
+			if(str.equals("putting hint"))
+			{
+				System.out.println("PRESENTER : HINT ");
+			}
+			
 		}
 		
 	}

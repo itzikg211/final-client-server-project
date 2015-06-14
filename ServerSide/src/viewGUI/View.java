@@ -12,4 +12,5 @@ public interface View
 	public void setProperties(PropertiesServer ps);
 	public void closeServer();
 	public PropertiesServer getProperties();
+	public void addClient(int ID);
 }

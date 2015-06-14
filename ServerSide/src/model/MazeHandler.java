@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.Socket;
+import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -15,9 +17,40 @@ import presenter.PropertiesServer;
 
 public class MazeHandler extends CommonClientHandler
 {
+
+	int ClientID=0;
+	Socket client;
+	HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
+	
+	
+	
 	@Override
-	public void handleClient(InputStream inFromClient, OutputStream outToClient) 
+	public void handleClient(Socket client) 
 	{
+
+		InputStream inFromClient=null;
+		try 
+		{
+			inFromClient = client.getInputStream();
+		} 
+		catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		OutputStream outToClient = null;
+		try 
+		{
+			outToClient = client.getOutputStream();
+		} 
+		catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		ClientID++;
+		clients.put(ClientID, client);
+		String str2 = "client added " + ClientID;
+		setChanged();
+		notifyObservers(str2);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inFromClient));
 		String line = null;
 		PropertiesServer pro = null;
@@ -47,6 +80,8 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("solve") && str[1].equals("maze"))
 				{
+					setChanged();
+					notifyObservers("solving maze");
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(),outToClient);
@@ -58,6 +93,8 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("hint") && str[1].equals("maze"))
 				{
+					setChanged();
+					notifyObservers("putting hint");
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(str[3]),outToClient);
@@ -75,10 +112,13 @@ public class MazeHandler extends CommonClientHandler
 			System.out.println("finished communication with client");
 		} catch (IOException e) 
 		{
-			e.printStackTrace();
+			setChanged();
+			String send = "remove client";
+			notifyObservers(send);
 		}
 		
 	}
+	
 	
 	public void compressObject(Object objectToCompress, OutputStream outstream)
 	{
@@ -177,6 +217,8 @@ public class MazeHandler extends CommonClientHandler
 		} 
 		return pro;
 	}
+
+
 	
 	
 }

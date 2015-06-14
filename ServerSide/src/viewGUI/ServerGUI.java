@@ -9,14 +9,18 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 import presenter.PropertiesServer;
 
 public class ServerGUI extends BasicWindow implements View
 {
-	
+	Table t;
+	int numOfClients;
 	PropertiesServer prop;
 	List IdList;
 	List IpList;
@@ -43,46 +47,42 @@ public class ServerGUI extends BasicWindow implements View
 		Button start = new Button(shell, SWT.PUSH);
 		start.setText("Start the server!");
 		start.setLayoutData(new GridData(SWT.CENTER,SWT.CENTER, false,false,1,1));
-		Button test = new Button(shell, SWT.PUSH);
-		test.setText("click me");
-		test.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
-		Text t = new Text(shell, SWT.BORDER);
-		t.setText("");
-		t.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
-		
-		
-		start.addSelectionListener(new SelectionListener() 
+		t = new Table(shell, SWT.VIRTUAL | SWT.BORDER);
+		TableColumn c1 = new TableColumn(t, SWT.CENTER);
+		TableColumn c2 = new TableColumn(t, SWT.CENTER);
+		TableColumn c3 = new TableColumn(t, SWT.CENTER);
+		c1.setText("Client ID");
+		c2.setText("Client IP");
+		c3.setText("Client Status");
+		c1.setWidth(70);
+		c2.setWidth(70);
+		c3.setWidth(100);
+		t.setHeaderVisible(true);
+		t.setLayoutData(new GridData(SWT.FILL,SWT.FILL, true,true,1,1));
+		/*for(int i=0;i<prop.getThreadNumber();i++)
 		{
+			new TableItem(t, SWT.NONE).setText("");
+		}*/
+		start.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0)
 			{
 				startServer(getProperties());
-				
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) 
-			{
-			}
-		});
-		test.addSelectionListener(new SelectionListener() 
-		{
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) 
-			{
-				t.setText("Hello world !");
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) 
-			{
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
 				
 			}
 		});
+		
+		
+		
+		
+		
 	}
-	
 	
 	public void setProperties(PropertiesServer ps)
 	{
@@ -120,5 +120,17 @@ public class ServerGUI extends BasicWindow implements View
 	@Override
 	public PropertiesServer getProperties() {
 		return prop;
+	}
+
+	@Override
+	public void addClient(int ID) {
+		String id = "" + ID;
+    	TableItem item1 = new TableItem(t, SWT.NONE, ID % prop.getThreadNumber());
+    	item1.setText(new String[] { id, "127.0.0.1", "getting maze" });
+	}
+	
+	public Display getOurDisplay()
+	{
+		return this.display;
 	}
 }

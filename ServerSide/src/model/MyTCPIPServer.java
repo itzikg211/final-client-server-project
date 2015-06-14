@@ -48,7 +48,7 @@ public class MyTCPIPServer
 					id++;
 					System.out.println("IP ADDRESS : " + someClient.getInetAddress());
 					clients.put(id, someClient);
-				//	server.setClients(clients);
+					
 					executor.execute(new Runnable() 
 					{
 						
@@ -56,8 +56,8 @@ public class MyTCPIPServer
 						public void run() 
 						{
 							try 
-							{
-								ch.handleClient(someClient.getInputStream(),someClient.getOutputStream());			
+							{			
+								ch.handleClient(someClient);			
 								someClient.close();
 							} 
 							catch (IOException e) 

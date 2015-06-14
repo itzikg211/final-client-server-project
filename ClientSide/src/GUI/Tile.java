@@ -67,6 +67,8 @@ public class Tile extends Canvas
 			        {
 			        	ImageData data1 = boatImg.getImageData();
 						e.gc.drawImage(boatImg,0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));//(int)(Math.min(e.width,e.height) * 0.7), (int)(Math.min(e.width,e.height) * 0.7));
+						finalImg = false;
+						circle = false;
 			        }
 			        if(firstTile)
 			        {
