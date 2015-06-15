@@ -53,6 +53,7 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("generate") && str[1].equals("maze"))
 				{
+					//String send = "generate maze" + 
 					m.setName(str[2]);
 					m.generateMaze(Integer.parseInt(str[3]),Integer.parseInt(str[4]));
 					compressObject(m.getMaze(),outToClient);
