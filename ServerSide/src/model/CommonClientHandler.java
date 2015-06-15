@@ -1,6 +1,5 @@
 package model;
 
-import java.net.ServerSocket;
 import java.util.Observable;
 /**
  * an abstractic class that implements from clientHandler
@@ -9,5 +8,5 @@ import java.util.Observable;
  */
 public abstract class CommonClientHandler extends Observable implements ClientHandler
 {
-	ServerSocket server;
+	//ServerSocket server;
 }

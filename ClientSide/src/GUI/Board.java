@@ -53,7 +53,7 @@ public class Board extends Composite
 	{
 		super(parent, style);
 		
-		b = new Boat(this);
+		//b = new Boat(this);
 		this.boatI=0;
 		this.boatJ=0;
 		addPaintListener(new PaintListener() 
@@ -159,7 +159,7 @@ public class Board extends Composite
 	
 	public void setBoatPosition(int i, int j) 
 	{
-		tiles[boatI][boatJ].setBoatImage(null);
+		tiles[boatI][boatJ].setcharacterImage(null);
 		tiles[boatI][boatJ].redraw();
 		
 		if(tiles[i][j].isCircle())
@@ -176,7 +176,7 @@ public class Board extends Composite
 			System.out.println(i + "," + j + " has hint");
 			tiles[i][j].removeHint();
 		}
-		tiles[i][j].setBoatImage(b.chooseOption(dir,i,j));
+		tiles[i][j].setcharacterImage(b.chooseOption(dir,i,j));
 		tiles[i][j].redraw();
 		boatI = i;
 		boatJ = j;

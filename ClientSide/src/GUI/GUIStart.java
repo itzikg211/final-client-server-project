@@ -71,7 +71,7 @@ public class GUIStart extends BasicWindow
 		Button setProperties = new Button(shell, SWT.PUSH);
 		setProperties.setText("Set The Properties");
 		setProperties.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
-
+		
 		
 		////All the listeners
 		startGame.addSelectionListener(new SelectionListener() 
@@ -84,7 +84,9 @@ public class GUIStart extends BasicWindow
 				MyModel m=new MyModel(properties);
 				if(properties.getView() == WayOfDisplay.GUI)
 				{
+					
 					StartWindow win=new StartWindow("Boat Maze", 1000, 800);
+					
 					Presenter p = new Presenter(m,win);
 					m.addObserver(p);
 					win.addObserver(p);

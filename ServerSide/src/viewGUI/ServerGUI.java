@@ -1,8 +1,5 @@
 package viewGUI;
 
-import java.net.Socket;
-import java.util.HashMap;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -10,6 +7,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -25,9 +24,10 @@ import presenter.PropertiesServer;
  */
 public class ServerGUI extends BasicWindow implements View
 {
-	int numOfClients;
-	PropertiesServer prop;
-	Table t;
+	private PropertiesServer prop;
+	private Table t;
+	//the current index we will close the socket with
+	private int val;
 	/**
 	 * Constructs and initializes the server's gui
 	 * @param title the title of the window
@@ -37,6 +37,7 @@ public class ServerGUI extends BasicWindow implements View
 	public ServerGUI(String title, int width, int height) 
 	{
 		super(title, width, height);
+		val = 0;
 	}
 	/**
 	 * sets the server window's widgets
@@ -63,9 +64,8 @@ public class ServerGUI extends BasicWindow implements View
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 		//creates a new table that conatains the client's details
@@ -79,7 +79,7 @@ public class ServerGUI extends BasicWindow implements View
 		//Creates 3 new columns
 		//c3 is the client status column
 		TableColumn c3 = new TableColumn(t, SWT.CENTER);
-		c1.setText("Client ID");
+		c1.setText("Serial Number");
 		c2.setText("Client IP");
 		c3.setText("Client Status");
 		//sets the widths of the columns
@@ -119,38 +119,53 @@ public class ServerGUI extends BasicWindow implements View
 			{
 			}
 		});
+		
+		t.addListener(SWT.Selection, new Listener()
+	    {
+	        @Override
+	        public void handleEvent(Event event)
+	        {
+	            if(event.detail == SWT.CHECK)
+	            {
+	                TableItem current = (TableItem)event.item;
+	                for(int i=0;i<t.getItemCount();i++)
+	                {
+	                if(current.equals(t.getItem(i)))
+	                {
+	                    val = i;
+	                }
+	                }
+	            }
+	        }
+	    });
+		
 		//add a selection listener that removed the selected clients
 		removeClients.addSelectionListener(new SelectionListener() {
 			
 			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				int counter = 0;
-				for(int i=0;i<t.getItemCount();i++)
-				{
-					//checkes if a specific row is checked
-					if(t.isSelected(i))
-					{
-						counter++;
-						String index = t.getItem(i).getText(0);
-						String send = "disconnect " + index;
-						//notify the presenter that a client is disconnected
-						setChanged();
-						notifyObservers(send);
-					}
-				}
-				//checked if the user didnt select a client and notifies about it
-				if(counter==0)
+			public void widgetSelected(SelectionEvent event) 
+			{
+				//checked if the user didn't select a client and notifies about it
+				if(val==0)
 				{
 					MessageBox mg = new MessageBox(shell);
-					mg.setMessage("you didnt select a client");
+					mg.setMessage("this is currently not functioning / you still haven't selected a client");
 					mg.open();
+				}
+				//checks if a specific row is checked
+				else
+				{
+					String send = "disconnect " + val;
+					//notify the presenter that a client is disconnected
+					t.getItem(val).dispose();;
+					setChanged();
+					notifyObservers(send);
 				}
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 	}
@@ -203,32 +218,12 @@ public class ServerGUI extends BasicWindow implements View
 	 * Changes the status of a selected client
 	 */
 	@Override
-	public void setStatus(int ID, String status) {
-		for(int i=0;i<t.getItemCount();i++)
-		{
-			String num = "" + ID;
-			if(t.getItem(i).getText(0).equals(num))
-				t.getItem(i).setText(2, status);
-		}
-		
-	}
-	/**
-	 * Removes a client from the clients list
-	 */
-	@Override
-	public void removeClient(int ID)
+	public void setStatus(int ID, String status) 
 	{
-		for(int i=0;i<t.getItemCount();i++)
-		{
 			String num = "" + ID;
-			if(t.getItem(i).getText(0).equals(num))
-			{
-				t.getItem(i).dispose();
-				MessageBox mb = new MessageBox(shell);
-				mb.setMessage("client number " + ID + " disconnected!");
-				mb.open();
-			}
-		}
+			TableItem item1 = new TableItem(t, SWT.NONE);
+			item1.setText(new String[] { num, "127.0.0.1", status });
+		
 	}
 
 }

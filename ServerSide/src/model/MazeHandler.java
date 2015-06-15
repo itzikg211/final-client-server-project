@@ -9,7 +9,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -23,44 +22,54 @@ import presenter.PropertiesServer;
 public class MazeHandler extends CommonClientHandler
 {
 	//counter of connected clients
-	int ClientID=0;
-	Socket client;
-	//hashmap that includes the socket and their ID
-	HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
+	int serialNumber=0;
+	MazeSolutionModel m;
+	Socket s;
+	ServerSocket ssock;
+	public MazeHandler() 
+	{
+		m = new MazeSolutionModel();
+	}
 	@Override
 	public void handleClient(Socket s) 
 	{
+		this.s = s;
 		InputStream inFromClient = null;
-		try {
+		try 
+		{
 			//sets the inputStream data member to the socket's inputStream
 			inFromClient = s.getInputStream();
-		} catch (IOException e1) {
+		} 
+		catch (IOException e1) 
+		{
 			e1.printStackTrace();
 		}
 		OutputStream outToClient = null;
-		try {
+		try 
+		{
 			//sets the OutputStream data member to the socket's OutputStream
 			outToClient = s.getOutputStream();
-		} catch (IOException e1) {
+		} catch (IOException e1) 
+		{
 			e1.printStackTrace();
 		}
 		Boolean solve = false;
 		//adding 1 to the client counter
-		ClientID++;
-		int currentID = ClientID;
-		//put the client's socket and his ID in the hashMap
-		clients.put(currentID, client);
-		//Notifies the presenter that a new client connected and the selected ID
-		String str2 = "client added " + currentID;
+		serialNumber++;
 		setChanged();
-		notifyObservers(str2);
-		//reades the Strings the client sends 
+		notifyObservers("start session " + serialNumber);
+		serialNumber++;
+		//put the client's socket and his ID in the hashMap
+		
+		//Notifies the presenter that a new client connected and the selected ID
+		//reads the Strings the client sends 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inFromClient));
-		//reads the properties from the  
+		//reads the properties from the client 
 		PropertiesServer pro = expandProperties(inFromClient);
 		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(outToClient));
 		String line = null;
-		MyModel m = new MyModel(pro);
+		m.setProperitesServer(pro);
+		compressObject("ACK",outToClient);
 		//compressObject(m.getNames(), outToClient);
 		try 
 		{
@@ -82,7 +91,7 @@ public class MazeHandler extends CommonClientHandler
 					//compress the maze using GZIP is send it to the client *out to client is the server's input stream
 					compressObject(m.getMaze(),outToClient);
 					//notifies the presenter that a maze is generated and the client's ID
-					String send = "generating maze " + currentID;
+					String send = "generating maze " + serialNumber;
 					setChanged();
 					notifyObservers(send);
 					//outToClient.flush();
@@ -102,7 +111,7 @@ public class MazeHandler extends CommonClientHandler
 					compressObject(m.getSolution(),outToClient);
 					outToClient.flush();
 					//notifies the poresenter that the client requested a solution
-					String send = "solving maze " + currentID;
+					String send = "solving maze " + serialNumber;
 					setChanged();
 					notifyObservers(send);
 					//sets the solve boolean to true (to prevent the hint notification in the server GUI) 
@@ -121,7 +130,7 @@ public class MazeHandler extends CommonClientHandler
 					m.solveMaze(m.getMaze());
 					//compresses the solution to GZIP and sends it to the client
 					compressObject(m.getSolution(str[3]),outToClient);
-					String send = "putting hint " + currentID;
+					String send = "putting hint " + serialNumber;
 					//checks if the maze was solved (to prevent the hint notification in the server GUI)
 					if(solve==false)
 					{
@@ -141,34 +150,24 @@ public class MazeHandler extends CommonClientHandler
 			 e.printStackTrace();
 			 
 		}
-		try {
+		try 
+		{
 			//close the communication with the client
 			reader.close();
 			System.out.println("finished communication with client");
 			//notifies the presenter that a client has disconnected
-			 String send = "remove client " + currentID;
-			 setChanged();
-			 notifyObservers(send);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			 //String send = "remove client " + currentID;
+			serialNumber++;
+			setChanged();
+			notifyObservers("close session " + serialNumber);
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		
 	}
-	/**
-	 * Removes the selected client from the hashmap and closes it
-	 * @param ID the selected client
-	 */
-	public void removeClient(int ID)
-	{
-		Socket s = clients.get(ID);
-		try {
-			s.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 	/**
 	 * compresses an object to GZIP file and sends it to the client
 	 * @param objectToCompress the object the function compresses to GZIP
@@ -177,49 +176,68 @@ public class MazeHandler extends CommonClientHandler
 	public void compressObject(Object objectToCompress, OutputStream outstream)
 	{
 		GZIPOutputStream gz = null;
-		try {
+		try 
+		{
 			gz = new GZIPOutputStream(outstream);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+		} 
+		catch (IOException e1) 
+		{
 			e1.printStackTrace();
 		}
 		ObjectOutputStream oos = null;
-		try {
+		try 
+		{
 			oos = new ObjectOutputStream(gz);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+		} 
+		catch (IOException e1) 
+		{
 			e1.printStackTrace();
 		}
-		try {
-			try {
+		try 
+		{
+			try 
+			{
 				oos.writeObject(objectToCompress);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 			try {
 				oos.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 			}		
 		finally 
 		{
-	    try {
-			//oos.close();
-			//gz.flush();
-			//outstream.flush();
-			//gz.close();
+	    try 
+	    {
 			gz.finish();
-			//outstream.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} 
+	    catch (IOException e) 
+	    {
 			e.printStackTrace();
 		}
 	   }
 	}
 	
+	public void removeClient(int index)
+	{
+		if(serialNumber == index)
+		{
+			try 
+			{
+				s.close();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public PropertiesServer expandProperties(InputStream instream)
 	{
@@ -273,18 +291,22 @@ public class MazeHandler extends CommonClientHandler
 	@Override
 	public void setServer(ServerSocket server) 
 	{
-		this.server = server;
+		this.ssock = server;
 	}
 	public void closeServer()
 	{
 		System.out.println("CLOSING THE SERVER");
-		try {
-			
-			this.server.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    if (ssock != null && !ssock.isClosed()) 
+	    {
+	        try 
+	        {
+	        	ssock.close();
+	        } 
+	        catch (IOException e)
+	        {
+	            e.printStackTrace(System.err);
+	        }
+	    }
 	}
 	
 

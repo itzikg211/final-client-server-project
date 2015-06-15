@@ -33,13 +33,14 @@ import algorithms.search.Solution;
 */
 
 
-public class MyModel extends Observable implements Model
+public class MazeSolutionModel implements Model
 {
 	private ExecutorService executor;
 	private Maze maze;
 	private Solution sol;
 	private String MazeName;
 	private HashMap<String,HashMap<Maze, Solution>> msols;
+	private HashMap<String,HashMap<Maze, Solution>> msTemp;
 	private PropertiesServer pro;
 	private String [] names;
 	
@@ -52,12 +53,12 @@ public class MyModel extends Observable implements Model
 	   * @return Nothing.
 	   */
 	
-	public MyModel(PropertiesServer pro) 
+	public MazeSolutionModel() 
 	{
 		//Initialize the threadpool.
-		this.pro = pro;
-		executor=Executors.newFixedThreadPool(pro.getThreadNumber());
+		//executor=Executors.newFixedThreadPool(pro.getThreadNumber());
 		msols = new HashMap<String, HashMap<Maze,Solution>>();
+		msTemp = new HashMap<String,HashMap<Maze, Solution>>();
 		//getting all the data from the database.
         /*Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
@@ -109,12 +110,16 @@ public class MyModel extends Observable implements Model
 			case DFS_ALGO:
 		    			MazeGenerator mg=new DFSMazeGenerator();
 		    			maze = mg.generateMaze(rows,cols);
-				notifyObservers("Genrate completed");
+		    			HashMap<Maze, Solution> temp = new HashMap<Maze, Solution>();
+		    			temp.put(maze, null);
+		    			msTemp.put(MazeName,temp);
 				break;
 			case RANDOM_ALGO:
 		    			MazeGenerator mg1=new RandomMazeGenerator();
 		    			maze = mg1.generateMaze(rows,cols);
-					notifyObservers("Genrate completed");
+		    			HashMap<Maze, Solution> temp1 = new HashMap<Maze, Solution>();
+		    			temp1.put(maze, null);
+		    			msTemp.put(MazeName,temp1);
 				break;
 			default:
 				break;
@@ -132,11 +137,13 @@ public class MyModel extends Observable implements Model
 	@Override
 	public Maze getMaze() 
 	{
-		if(maze==null)
+		/*if(maze==null)
 		{
 			System.out.println("No maze yet");
 			return null;
-		}
+		}*/
+		HashMap<Maze, Solution> temp = msTemp.get(MazeName);
+		maze = temp.keySet().iterator().next();
 		return maze;
 	}
 
@@ -154,15 +161,12 @@ public class MyModel extends Observable implements Model
 			HashMap <Maze, Solution> temp = new HashMap<Maze, Solution>(); 
 			temp = msols.get(MazeName);
 			sol = temp.get(m);
-			setChanged();
-			notifyObservers("solved the maze");
 		}
 		else
 		{
 			switch(pro.getMazeSolver())
 			{
 			case BFS_DIAGONAL:
-                	notifyObservers("\nSolution BFS with diagonals");
         			MazeSearch ms2 = new MazeSearch(m,true);
         			BFS sol3 = new BFS();
         			sol = sol3.search(ms2);
@@ -174,7 +178,6 @@ public class MyModel extends Observable implements Model
             		sol = sol1.search(ms1);
 			break;
 			case ASTAR_MANHATTAN_DISTANCE:
-                	notifyObservers("\nSolution A* without diagonals");
         			MazeSearch ams1 = new MazeSearch(m,false);
         			AStar sol5 = new AStar();
         			sol5.setH(new MazeManhattanDistance());
@@ -290,7 +293,6 @@ public class MyModel extends Observable implements Model
 			switch(pro.getMazeSolver())
 			{
 			case BFS_DIAGONAL:
-                	notifyObservers("\nSolution BFS with diagonals");
         			MazeSearch ms2 = new MazeSearch(maze,true);
         			ms2.setStartState(s);
         			BFS sol3 = new BFS();
@@ -304,7 +306,6 @@ public class MyModel extends Observable implements Model
             		sol = sol2.search(ms1);
             		break;
 			case ASTAR_MANHATTAN_DISTANCE:
-                	notifyObservers("\nSolution A* without diagonals");
         			MazeSearch ams1 = new MazeSearch(maze,false);
         			ams1.setStartState(s);
         			AStar sol5 = new AStar();
@@ -336,7 +337,10 @@ public class MyModel extends Observable implements Model
 	}
 	
 	
-
+	public void setProperitesServer(PropertiesServer pro)
+	{
+		this.pro = pro;
+	}
 	
 
 	

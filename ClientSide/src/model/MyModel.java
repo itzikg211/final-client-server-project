@@ -10,8 +10,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Observable;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -37,6 +40,7 @@ public class MyModel extends Observable implements Model
 	private Socket myClient;
 	private PrintWriter outToServer;
 	private String [] names;
+	private Properties pro;
 	int nameIsFine;
 	 /**
 	   * This is the C'tor of MyModel. 
@@ -48,11 +52,12 @@ public class MyModel extends Observable implements Model
 	
 	public MyModel(Properties pro) 
 	{
+		this.pro = pro;
 		executor=Executors.newFixedThreadPool(pro.getThreadNumber());
 		System.out.println("CLIENT SIDE");
 		nameIsFine = 0;
-		myClient = null;
-		try 
+		//myClient = null;
+		/*try 
 		{
 			myClient = new Socket(pro.getIpAddr(),pro.getPortNumber());
 		} 
@@ -70,12 +75,11 @@ public class MyModel extends Observable implements Model
 		try 
 		{
 			outToServer = new PrintWriter(new OutputStreamWriter(myClient.getOutputStream()));
-		} catch (IOException e1) 
+		} 
+		catch (IOException e1) 
 		{
 			e1.printStackTrace();
 		}
-		names = new String[1];
-		names[0] = "gogo";
 		try 
 		{
 			compressObject(pro, myClient.getOutputStream());
@@ -83,7 +87,7 @@ public class MyModel extends Observable implements Model
 		catch (IOException e) 
 		{
 			e.printStackTrace();
-		}
+		}*/
 
 		/*try 
 		{
@@ -93,6 +97,8 @@ public class MyModel extends Observable implements Model
 		{
 			e.printStackTrace();
 		}*/
+		names = new String[1];
+		names[0] = "gogo";
 	}
 
 	
@@ -192,22 +198,116 @@ public class MyModel extends Observable implements Model
 		{
 			return null;
 		}
+		
 		else
 		{
+			myClient = null;
+			try 
+			{
+				myClient = new Socket(pro.getIpAddr(),pro.getPortNumber());
+			} 
+			catch (UnknownHostException e) 
+			{
+				System.out.println("unknown host! You should check if the server is even open...");
+				System.exit(0);
+			} 
+			catch (IOException e) 
+			{
+				System.out.println("Wrong I/O");
+				System.out.println("You should check if the server is even open...");
+				System.exit(0);
+			}
+			try 
+			{
+				outToServer = new PrintWriter(new OutputStreamWriter(myClient.getOutputStream()));
+			} 
+			catch (IOException e1) 
+			{
+				e1.printStackTrace();
+			}
+			try 
+			{
+				compressObject(pro, myClient.getOutputStream());
+				expandString(myClient.getInputStream());
+			} 
+			catch (IOException e1) 
+			{
+				e1.printStackTrace();
+			}
 			outToServer.println("hint maze"+ " " + mazeName + " " + s);
 			outToServer.flush();	
-							try {
-								expandSolution(myClient.getInputStream());
-							} 
-							catch (IOException e1) 
-							{
-								e1.printStackTrace();
-							}
+			Future<Solution> future = executor.submit(new Callable<Solution>() 
+			{
+
+				@Override
+				public Solution call() throws Exception 
+				{
+					expandSolution(myClient.getInputStream());
+					return sol;
+				}
+			});
+			try {
+				future.get();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			outToServer.println("exit");
+			outToServer.flush();
+			System.out.println("stop");
+			try 
+			{
+				myClient.close();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 			return sol;
 		}		
 		
 	}
 	
+	private void expandString(InputStream instream) 
+	{
+		GZIPInputStream gs = null;
+		try 
+		{
+			gs = new GZIPInputStream(instream);
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		   ObjectInputStream ois = null;
+		try 
+		{
+			ois = new ObjectInputStream(gs);
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		   try 
+		   {
+			   String temp = (String) ois.readObject();
+		   } 
+		   catch (ClassNotFoundException e) 
+		   {
+			e.printStackTrace();
+		   } 
+		   catch (IOException e) 
+		   {
+			e.printStackTrace();
+		   }
+		
+	}
+
+
+
 	@Override
 	public Solution getSolution() 
 	{
@@ -304,15 +404,78 @@ public class MyModel extends Observable implements Model
 		}
 		if(nameIsFine % 2 == 0)
 		{
+			myClient = null;
+			try 
+			{
+				myClient = new Socket(pro.getIpAddr(),pro.getPortNumber());
+			} 
+			catch (UnknownHostException e) 
+			{
+				System.out.println("unknown host! You should check if the server is even open...");
+				System.exit(0);
+			} 
+			catch (IOException e) 
+			{
+				System.out.println("Wrong I/O");
+				System.out.println("You should check if the server is even open...");
+				System.exit(0);
+			}
+			try 
+			{
+				outToServer = new PrintWriter(new OutputStreamWriter(myClient.getOutputStream()));
+			} 
+			catch (IOException e1) 
+			{
+				e1.printStackTrace();
+			}
+			try 
+			{
+				compressObject(pro, myClient.getOutputStream());
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+			try 
+			{
+				expandString(myClient.getInputStream());
+			} 
+			catch (IOException e1) 
+			{
+				e1.printStackTrace();
+			}
 			outToServer.println("generate maze"+ " " + mazeName + " " + rows + " "+ cols);
 			outToServer.flush();
 			nameIsFine = 0;
+			Future<Maze> future = executor.submit(new Callable<Maze>() 
+			{
+
+				@Override
+				public Maze call() throws Exception 
+				{
+					expandMaze(myClient.getInputStream());
+					return maze;
+				}
+			});
+			try {
+				future.get();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			outToServer.println("exit");
+			outToServer.flush();
+			System.out.println("stop");
 			try 
 			{
-				expandMaze(myClient.getInputStream());
-			} catch (IOException e1) 
+				myClient.close();
+			} 
+			catch (IOException e) 
 			{
-				e1.printStackTrace();
+				e.printStackTrace();
 			}
 			setChanged();
 			notifyObservers("name is fine");
@@ -335,15 +498,78 @@ public class MyModel extends Observable implements Model
 	@Override
 	public void solveMaze(Maze m) 
 	{
-		outToServer.println("solve maze"+ " " + mazeName);
-		outToServer.flush();
+		myClient = null;
 		try 
 		{
-			expandSolution(myClient.getInputStream());
-		} catch (IOException e) 
+			myClient = new Socket(pro.getIpAddr(),pro.getPortNumber());
+		} 
+		catch (UnknownHostException e) 
+		{
+			System.out.println("unknown host! You should check if the server is even open...");
+			System.exit(0);
+		} 
+		catch (IOException e) 
+		{
+			System.out.println("Wrong I/O");
+			System.out.println("You should check if the server is even open...");
+			System.exit(0);
+		}
+		try 
+		{
+			outToServer = new PrintWriter(new OutputStreamWriter(myClient.getOutputStream()));
+		} 
+		catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		try 
+		{
+			compressObject(pro, myClient.getOutputStream());
+		} 
+		catch (IOException e) 
 		{
 			e.printStackTrace();
-		}		
+		}
+		try 
+		{
+			expandString(myClient.getInputStream());
+		} 
+		catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		outToServer.println("solve maze"+ " " + mazeName);
+		outToServer.flush();
+		Future<Solution> future = executor.submit(new Callable<Solution>() 
+		{
+
+			@Override
+			public Solution call() throws Exception 
+			{
+				expandSolution(myClient.getInputStream());
+				return sol;
+			}
+		});
+		try {
+			future.get();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		outToServer.println("exit");
+		outToServer.flush();
+		System.out.println("stop");
+		try 
+		{
+			myClient.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override

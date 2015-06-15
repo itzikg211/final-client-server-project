@@ -28,6 +28,7 @@ public class Presenter implements Observer
 	View v;
 	MazeHandler m;
 	OutputStream outToClient;
+	MyTCPIPServer start;
 	HashMap<String, Command> commands = new HashMap<String, Command>();
 	/**
 	 * Constructs and initializes the Presenter
@@ -53,15 +54,21 @@ public class Presenter implements Observer
 			{
 				System.out.println("STARTING THE SERVER.....");
 				//creating new MyTCPIPServer with the properties port number
-				MyTCPIPServer start = new MyTCPIPServer(v.getProperties().getPortNumber(),m);
+				start = new MyTCPIPServer(v.getProperties().getPortNumber(),m);
 				start.startServer(v.getProperties().getNumOfClients());
+				
 			}
 			//the view sends this string "close server" button is pressed
 			if(str2.equals("close server"))
 			{
 				System.out.println("CLOSING THE SERVER.....");
-				m.closeServer();
+				start.setStopped(true);
+				start.startServer(0);
 				
+			}
+			if(str2.startsWith("disconnect "))
+			{
+				m.removeClient(Integer.parseInt(str2.split(" ")[1]));
 			}
 			
 		}
@@ -89,23 +96,6 @@ public class Presenter implements Observer
 				
 			}
 			//checks if the clientHandler want to remove a client
-			else if(str.startsWith("remove client"))
-			{
-				String[] temp = str.split(" ");
-				int ID = Integer.parseInt(temp[2]);
-				//runs the remove client function in the View that removes a client from the clients table
-				new Thread(new Runnable() {
-				      public void run() {
-				             Display.getDefault().asyncExec(new Runnable() {
-				               public void run() {
-				            	   v.removeClient(ID);
-				               }
-				            });
-				         }
-				      }
-				   ).start();
-			}
-			//if the ClientHandler want to change the client's status in the view it arrives to here
 			else
 			{
 				//the status we want to inject
@@ -126,7 +116,6 @@ public class Presenter implements Observer
 				      }
 				   ).start();
 			}
-			
 		}
 		
 	}
@@ -168,10 +157,12 @@ public class Presenter implements Observer
 
 				e.printStackTrace();
 			}
-			try {
+			try
+			{
 				oos.flush();
 				oos.reset();
-			} catch (IOException e) 
+			} 
+			catch (IOException e) 
 			{
 
 				e.printStackTrace();
@@ -189,21 +180,5 @@ public class Presenter implements Observer
 		}
 	   }
 	}
-	
-	
-	
-	/*public OutputStream getOutToClient() 
-	{
-		return outToClient;
-	}
-	
-	public void setOutToClient(OutputStream outToClient) 
-	{
-		this.outToClient = outToClient;
-		//the first thing we want to do is to send the names in the DB to the client
-		compressObject(m.getNames(), outToClient);
-	}*/
-	
-	
 
 }

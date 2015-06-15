@@ -22,7 +22,7 @@ public class Tile extends Canvas
 	private int clickI,clickJ,unclickI,unclickJ;
 	private int temp1,temp2;
 	private Image arrowImage;
-	private Boat boat;
+	private CommonGameCharacter boat;
 	private Image boatImg;
 	private boolean firstTile;
 	private boolean hint = false;
@@ -72,7 +72,7 @@ public class Tile extends Canvas
 			        }
 			        if(firstTile)
 			        {
-			        	setBoatImage(new Image(null, "resources/boat-right.png"));
+			        	setcharacterImage(new Image(null, "resources/boat-right.png"));
 			        	ImageData data1 = new Image(null, "resources/boat-right.png").getImageData();
 			        	e.gc.drawImage(new Image(null, "resources/boat-right.png"),0,0,data1.width,data1.height,(int)(width/8),(int)(height/8),(int)(width*0.7),(int)(height*0.7));
 			        }
@@ -166,7 +166,7 @@ public class Tile extends Canvas
 	 * Sets the boat image
 	 * @param image the selected boat image
 	 */
-	public void setBoatImage(Image image)
+	public void setcharacterImage(Image image)
 	{
 		firstTile = false;
 		this.boatImg = image;
@@ -266,6 +266,11 @@ public class Tile extends Canvas
 	{
 		this.boat=b;
 	}
+	public void setCharacter(CommonGameCharacter cgc)
+	{
+		this.boat=cgc;
+	}
+
 	public void setFinalImg(boolean finalImg) 
 	{
 		this.finalImg = finalImg;

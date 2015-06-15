@@ -23,6 +23,8 @@ public class MyTCPIPServer
 	int id ;
 	CommonClientHandler ch;
 	ServerGUI server;
+	ServerSocket myServer;
+	ExecutorService executor;
 	HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
 	/**
 	 * Constructs and initializes the MyTCPIPServer class
@@ -38,7 +40,7 @@ public class MyTCPIPServer
 	public void startServer(int numOfClients)
 	{
 		System.out.println("START SERVER");
-		ServerSocket myServer = null;
+		myServer = null;
 		try {
 			//opens the serverSocket at the implemented port 
 			myServer = new ServerSocket(port);
@@ -46,11 +48,11 @@ public class MyTCPIPServer
 			myServer.setSoTimeout(300000);
 			//sets the server at the client handler
 			ch.setServer(myServer);
-			ExecutorService executor = Executors.newFixedThreadPool(numOfClients);
+			executor = Executors.newFixedThreadPool(numOfClients);
 			System.out.println("waiting for client");
 			try
 			{
-				while(!isStopped)
+				while(!isStopped())
 				{
 					//waiting for accept and sets someClient
 					final Socket someClient = myServer.accept();
@@ -84,7 +86,14 @@ public class MyTCPIPServer
 		
 		catch (IOException e) 
 		{
-			e.printStackTrace();
+			try 
+			{
+				myServer.close();
+			} 
+			catch (IOException e1) 
+			{
+				e1.printStackTrace();
+			}
 		}
 		try 
 		{
@@ -98,5 +107,23 @@ public class MyTCPIPServer
 	}
 	
 	
+	public ServerSocket getMyServer() {
+		return myServer;
+	}
+	public void setMyServer(ServerSocket myServer) {
+		this.myServer = myServer;
+	}
 	 
+	public boolean isStopped() {
+		return isStopped;
+	}
+	public void setStopped(boolean isStopped) {
+		this.isStopped = isStopped;
+	}
+	public ExecutorService getExecutor() {
+		return executor;
+	}
+	public void setExecutor(ExecutorService executor) {
+		this.executor = executor;
+	}
 }

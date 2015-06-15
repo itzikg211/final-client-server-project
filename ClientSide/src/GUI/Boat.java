@@ -8,18 +8,28 @@ import org.eclipse.swt.graphics.Image;
  * @since   2015-06-02
  *
  */
-public class Boat
+public class Boat extends CommonGameCharacter
 {
 	int x,y;
 	int w,h;
 	Image boatImg;
-	Board maze;
+	CommonGameBoard maze;
 	
-	public Boat(Board b) 
+	/*public Boat(Board b) 
 	{
 		x=0;
 		y=0;
 		this.maze= b;
+	}*/
+	/*public Boat(Board board) {
+		x=0;
+		y=0;
+		this.maze= board;
+	}*/
+	public Boat(CommonGameBoard board) {
+		x=0;
+		y=0;
+		this.maze= board;
 	}
 	/**
 	 * returns the selected image to display on the board
@@ -92,8 +102,8 @@ public class Boat
 			if(maze.canMove(maze.getX(),maze.getY(), 0))
 			{
 				System.out.println("CAN MOVE");
-				maze.setDir(0);
-				maze.setBoatPosition(maze.getX()-1,maze.getY());						
+				maze.SetCharacterDirection(0);
+				maze.setCharacterPosition(maze.getX()-1,maze.getY());						
 			}
 			else
 				System.out.println("CAN NOT MOVE");
@@ -104,8 +114,8 @@ public class Boat
 			if(maze.canMove(maze.getX(),maze.getY(), 1))
 			{
 				System.out.println("CAN MOVE");
-				maze.setDir(1);
-				maze.setBoatPosition(maze.getX(),maze.getY()+1);						
+				maze.SetCharacterDirection(1);
+				maze.setCharacterPosition(maze.getX(),maze.getY()+1);						
 			}
 			else
 				System.out.println("CAN NOT MOVE");
@@ -116,8 +126,8 @@ public class Boat
 			if(maze.canMove(maze.getX(),maze.getY(), 2))
 			{
 				System.out.println("CAN MOVE");
-				maze.setDir(2);
-				maze.setBoatPosition(maze.getX()+1,maze.getY());						
+				maze.SetCharacterDirection(2);
+				maze.setCharacterPosition(maze.getX()+1,maze.getY());						
 			}
 			else
 				System.out.println("CAN NOT MOVE");
@@ -128,12 +138,58 @@ public class Boat
 			if(maze.canMove(maze.getX(),maze.getY(), 3))
 			{
 				System.out.println("CAN MOVE");
-				maze.setDir(3);
-				maze.setBoatPosition(maze.getX(),maze.getY()-1);						
+				maze.SetCharacterDirection(3);
+				maze.setCharacterPosition(maze.getX(),maze.getY()-1);						
 			}
 			else
 				System.out.println("CAN NOT MOVE");
 		}
+	}
+	@Override
+	public void setPosition(int x, int y) {
+		// TODO Auto-generated method stub
+		this.x=x;
+		this.y=y;
+	}
+	@Override
+	public void setRightImage(Image right) {
+		// TODO Auto-generated method stub
+		this.right=right;
+	}
+	@Override
+	public void setLeftImage(Image left) {
+		// TODO Auto-generated method stub
+		this.left=left;
+	}
+	@Override
+	public void setUpImage(Image up) {
+		// TODO Auto-generated method stub
+		this.up=up;
+	}
+	@Override
+	public void setDownImage(Image down) {
+		// TODO Auto-generated method stub
+		this.down=down;
+	}
+	@Override
+	public Image chooseOption(int dir) {
+		if(dir==0)
+		{
+			return up;
+		}
+		if(dir==1)
+		{
+			return right;
+		}
+		if(dir==2)
+		{
+			return down;
+		}
+		if(dir==3)
+		{
+			return left;
+		}
+		return null;
 	}
 	
 }
