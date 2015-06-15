@@ -41,6 +41,7 @@ public class MazeHandler extends CommonClientHandler
 		String line = null;
 		MyModel m = new MyModel(pro);
 		compressObject(m.getNames(), outToClient);
+		
 		try 
 		{
 			while(!(line = reader.readLine()).equals("exit"))
