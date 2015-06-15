@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -16,7 +17,9 @@ import presenter.PropertiesServer;
 
 public class MazeHandler extends CommonClientHandler
 {
-
+	int ClientID=0;
+	Socket client;
+	HashMap<Integer, Socket> clients = new HashMap<Integer, Socket>();
 	@Override
 	public void handleClient(Socket s) 
 	{
@@ -34,14 +37,20 @@ public class MazeHandler extends CommonClientHandler
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		//need to do this part :) TODO
+		
+		ClientID++;
+		int currentID = ClientID;
+		clients.put(currentID, client);
+		String str2 = "client added " + currentID;
+		setChanged();
+		notifyObservers(str2);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inFromClient));
 		PropertiesServer pro = expandProperties(inFromClient);
 		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(outToClient));
+		
 		String line = null;
 		MyModel m = new MyModel(pro);
 		compressObject(m.getNames(), outToClient);
-		
 		try 
 		{
 			while(!(line = reader.readLine()).equals("exit"))
@@ -53,10 +62,12 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("generate") && str[1].equals("maze"))
 				{
-					//String send = "generate maze" + 
 					m.setName(str[2]);
 					m.generateMaze(Integer.parseInt(str[3]),Integer.parseInt(str[4]));
 					compressObject(m.getMaze(),outToClient);
+					String send = "generating maze " + currentID;
+					setChanged();
+					notifyObservers(send);
 					//outToClient.flush();
 				}
 			}
@@ -69,6 +80,9 @@ public class MazeHandler extends CommonClientHandler
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(),outToClient);
 					outToClient.flush();
+					String send = "solving maze " + currentID;
+					setChanged();
+					notifyObservers(send);
 				}
 			}
 			//check if client requested for a hint for the maze
@@ -79,24 +93,44 @@ public class MazeHandler extends CommonClientHandler
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(str[3]),outToClient);
+					String send = "putting hint " + currentID;
+					setChanged();
+					notifyObservers(send);
 				}
 			}
 			
 			//writer.println("ACK");
 			//writer.flush();
 			}
+			
 		} 
 		catch (IOException e) 
 		{
 			 e.printStackTrace();
+			 
 		}
 		try {
 			reader.close();
+			System.out.println("finished communication with client");
+			 String send = "remove client " + currentID;
+			 setChanged();
+			 notifyObservers(send);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void removeClient(int ID)
+	{
+		Socket s = clients.get(ID);
+		try {
+			s.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void compressObject(Object objectToCompress, OutputStream outstream)

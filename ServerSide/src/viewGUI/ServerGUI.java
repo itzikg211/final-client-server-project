@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -45,6 +46,7 @@ public class ServerGUI extends BasicWindow implements View
 		c2.setWidth(70);
 		c3.setWidth(150);
 		t.setHeaderVisible(true);
+		t.setBackground(new Color(display, 0, 100, 250));
 		t.setLayoutData(new GridData(SWT.FILL,SWT.FILL, true,true,1,1));
 		Button removeClients = new Button(shell, SWT.PUSH);
 		removeClients.setText("disconnect selected clients");
