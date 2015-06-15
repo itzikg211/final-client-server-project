@@ -59,7 +59,7 @@ public class MyModel extends Observable implements Model
 		executor=Executors.newFixedThreadPool(pro.getThreadNumber());
 		msols = new HashMap<String, HashMap<Maze,Solution>>();
 		//getting all the data from the database.
-        Configuration configuration = new Configuration();
+        /*Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
         StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
@@ -84,7 +84,7 @@ public class MyModel extends Observable implements Model
 			i++;
 		}
 		System.out.println("finished receiving data from DB");
-		session.close();
+		session.close();*/
 		
 	}
 	
@@ -190,28 +190,28 @@ public class MyModel extends Observable implements Model
 			}
 			/////here we communicate with the database
 			
-			Configuration configuration = new Configuration();
+			/*Configuration configuration = new Configuration();
 			configuration.configure("hibernate.cfg.xml");
 			StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
 			SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
 			Session session = sessionFactory.openSession();
 			session.beginTransaction();
-			MazeSolutionHibernate msh = new MazeSolutionHibernate();
-			if(msols.containsKey(MazeName))
+			MazeSolutionHibernate msh = new MazeSolutionHibernate();*/
+			/*if(msols.containsKey(MazeName))
 			{
 				session.close();
 				System.out.println("You entered the same name for two different mazes, This maze and solution won't go inside the database.");
 				return;
-			}
-			msh.setMaze(maze.toString());
+			}*/
+			/*msh.setMaze(maze.toString());
 			msh.setSol(sol.toString());
 			msh.setId(MazeName);
 			session.save(msh);
-			session.getTransaction().commit();
+			session.getTransaction().commit();*/
 			HashMap <Maze, Solution> temp1 = new HashMap<Maze, Solution>(); 
 			temp1.put(maze, sol);
 			msols.put(MazeName, temp1);
-			session.close();
+			//session.close();
 			
 		}
 		

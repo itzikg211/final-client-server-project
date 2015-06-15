@@ -74,8 +74,8 @@ public class MyModel extends Observable implements Model
 		{
 			e1.printStackTrace();
 		}
-		//names = new String[1];
-		//names[0] = "gogo";
+		names = new String[1];
+		names[0] = "gogo";
 		try 
 		{
 			compressObject(pro, myClient.getOutputStream());
@@ -85,14 +85,14 @@ public class MyModel extends Observable implements Model
 			e.printStackTrace();
 		}
 
-		try 
+		/*try 
 		{
 			expandNames(myClient.getInputStream());
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	

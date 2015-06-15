@@ -10,7 +10,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -42,11 +41,11 @@ public class ServerGUI extends BasicWindow implements View
 		c1.setText("Client ID");
 		c2.setText("Client IP");
 		c3.setText("Client Status");
-		c1.setWidth(70);
-		c2.setWidth(70);
-		c3.setWidth(150);
+		c1.setWidth(100);
+		c2.setWidth(120);
+		c3.setWidth(220);
 		t.setHeaderVisible(true);
-		t.setBackground(new Color(display, 0, 100, 250));
+		t.setBackground(new Color(display, 0, 120, 250));
 		t.setLayoutData(new GridData(SWT.FILL,SWT.FILL, true,true,1,1));
 		Button removeClients = new Button(shell, SWT.PUSH);
 		removeClients.setText("disconnect selected clients");
@@ -111,7 +110,7 @@ public class ServerGUI extends BasicWindow implements View
 		this.prop = ps;
 	}
 	
-	public void setClients(HashMap<Integer, Socket> clients)
+	/*public void setClients(HashMap<Integer, Socket> clients)
 	{
 		//if(IdList.)
 		//IdList.removeAll();
@@ -124,7 +123,7 @@ public class ServerGUI extends BasicWindow implements View
 				//IpList.add(clients.get(i).getInetAddress().toString());
 			}
 		}
-	}
+	}*/
 
 	@Override
 	public void startServer(PropertiesServer pro) 
@@ -170,7 +169,13 @@ public class ServerGUI extends BasicWindow implements View
 		{
 			String num = "" + ID;
 			if(t.getItem(i).getText(0).equals(num))
+			{
 				t.getItem(i).dispose();
+				MessageBox mb = new MessageBox(shell);
+				mb.setMessage("client number " + ID + " disconnected!");
+				mb.open();
+			}
 		}
 	}
+
 }

@@ -37,7 +37,7 @@ public class MazeHandler extends CommonClientHandler
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		Boolean solve = false;
 		ClientID++;
 		int currentID = ClientID;
 		clients.put(currentID, client);
@@ -50,7 +50,7 @@ public class MazeHandler extends CommonClientHandler
 		
 		String line = null;
 		MyModel m = new MyModel(pro);
-		compressObject(m.getNames(), outToClient);
+		//compressObject(m.getNames(), outToClient);
 		try 
 		{
 			while(!(line = reader.readLine()).equals("exit"))
@@ -76,6 +76,7 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("solve") && str[1].equals("maze"))
 				{
+					System.out.println("REQUSTING SOLVE");
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(),outToClient);
@@ -83,6 +84,7 @@ public class MazeHandler extends CommonClientHandler
 					String send = "solving maze " + currentID;
 					setChanged();
 					notifyObservers(send);
+					solve = true;
 				}
 			}
 			//check if client requested for a hint for the maze
@@ -90,12 +92,18 @@ public class MazeHandler extends CommonClientHandler
 			{
 				if(str[0].equals("hint") && str[1].equals("maze"))
 				{
+					System.out.println("REQUSTING HINT");
 					m.setName(str[2]);
 					m.solveMaze(m.getMaze());
 					compressObject(m.getSolution(str[3]),outToClient);
 					String send = "putting hint " + currentID;
-					setChanged();
-					notifyObservers(send);
+					if(solve==false)
+					{
+						setChanged();
+						notifyObservers(send);
+					}
+					else
+						solve = false;
 				}
 			}
 			
