@@ -55,19 +55,6 @@ public class ServerGUI extends BasicWindow implements View
 		Button close = new Button(shell, SWT.PUSH);
 		close.setText("Close the server");
 		close.setLayoutData(new GridData(SWT.CENTER,SWT.NONE, false,false,1,1));
-		close.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				closeServer();
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) 
-			{
-			}
-		});
 		//creates a new table that conatains the client's details
 		t = new Table(shell, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		//Creates 3 new columns
@@ -95,6 +82,36 @@ public class ServerGUI extends BasicWindow implements View
 		Button removeClients = new Button(shell, SWT.PUSH);
 		removeClients.setText("disconnect selected clients");
 		removeClients.setLayoutData(new GridData(SWT.FILL,SWT.NONE, true,false,1,1));
+		//the close button selection listener
+		close.addSelectionListener(new SelectionListener() 
+		{
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) 
+			{
+				int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+				MessageBox mb = new MessageBox(shell,style);
+				mb.setMessage("Exit the server ?");
+				mb.setText("Confirm Exit");
+				int rc = mb.open();
+				switch(rc)
+				{
+				case SWT.YES:
+					setChanged();
+					notifyObservers("finish");
+					display.dispose();				
+					break;
+				case SWT.NO:
+					break;
+				}
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
+			}
+		});
 		//add a selection listener that starts the server in a Thread
 		start.addSelectionListener(new SelectionListener() {
 			
@@ -137,6 +154,31 @@ public class ServerGUI extends BasicWindow implements View
 	                }
 	            }
 	        }
+	    });
+		
+		//listening to the regular closing 
+		shell.addListener(SWT.Close, new Listener() 
+		{
+		      public void handleEvent(Event event) 
+		      {
+					int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
+					MessageBox mb = new MessageBox(shell,style);
+					mb.setMessage("Exit the server ?");
+					mb.setText("Confirm Exit");
+					int rc = mb.open();
+					switch(rc)
+					{
+					case SWT.YES:
+						event.doit = true;
+						setChanged();
+						notifyObservers("finish");
+						display.dispose();				
+					break;
+					case SWT.NO:
+						event.doit = false;
+						break;
+					}
+		      }
 	    });
 		
 		//add a selection listener that removed the selected clients
@@ -208,7 +250,6 @@ public class ServerGUI extends BasicWindow implements View
 	 */
 	@Override
 	public void addClient(int ID) {
-		System.out.println("ADDING CLIENT NUMBER " + ID + " TO THE TABLE");
 		String id = "" + ID;
 		TableItem item1 = new TableItem(t, SWT.NONE);
 	    item1.setText(new String[] { id, "127.0.0.1", "client connected" });

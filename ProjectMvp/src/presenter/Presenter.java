@@ -176,7 +176,6 @@ public class Presenter implements Observer
 					String name = sw[3];
 					int i = Integer.parseInt(sw[4]);
 					int j = Integer.parseInt(sw[5]);
-					String send = i+","+j;
 					Solution s = setGuiSolution(name,i,j);
 					v.setSolution(s);
 				}

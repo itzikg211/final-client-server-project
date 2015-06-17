@@ -41,8 +41,10 @@ public class MyModel extends Observable implements Model
 	private PrintWriter outToServer;
 	private String [] names;
 	private Properties pro;
-	int nameIsFine;
-	 /**
+	boolean nameIsFine;
+
+
+	/**
 	   * This is the C'tor of MyModel. 
 	   * <p>The first thing it does is initialize the ThreadPool.
 	   * The second thing it does is getting all the data(name, maze, solution) from the database, from the MazeSolutionHibernate table..
@@ -55,7 +57,7 @@ public class MyModel extends Observable implements Model
 		this.pro = pro;
 		executor=Executors.newFixedThreadPool(pro.getThreadNumber());
 		System.out.println("CLIENT SIDE");
-		nameIsFine = 0;
+		nameIsFine = true;
 		//myClient = null;
 		/*try 
 		{
@@ -97,12 +99,16 @@ public class MyModel extends Observable implements Model
 		{
 			e.printStackTrace();
 		}*/
-		names = new String[1];
-		names[0] = "gogo";
+		//names = new String[1];
+		//names[0] = "gogo";
 	}
 
 	
-	
+	/**
+	 * Compresses an object and send it the the OutputStream
+	 * @param objectToCompress the object we want to compress
+	 * @param outstream the OutputStream we write the compressed object to
+	 */
 	public void compressObject(Object objectToCompress, OutputStream outstream)
 	{
 		GZIPOutputStream gz = null;
@@ -154,7 +160,10 @@ public class MyModel extends Observable implements Model
 		}
 		}
 	}
-	
+	/**
+	 * reads an array of strings that represent the maze names from an InputStream
+	 * @param instream the InputStream we read the names from
+	 */
 	public void expandNames(InputStream instream)
 	 {
 			GZIPInputStream gs = null;
@@ -190,7 +199,11 @@ public class MyModel extends Observable implements Model
 	  }
 	
 	
-	
+	 /**
+	   * This method solves the maze form a state represented by a String with the specific maze name.
+	   * @param s <b>(String) </b>This is the parameter to the getSolution method.
+	   * @return sol <b>(Solution) </b>.
+	   */
 	@Override
 	public Solution getSolution(String s) 
 	{
@@ -228,7 +241,7 @@ public class MyModel extends Observable implements Model
 			try 
 			{
 				compressObject(pro, myClient.getOutputStream());
-				expandString(myClient.getInputStream());
+				expandNames(myClient.getInputStream());
 			} 
 			catch (IOException e1) 
 			{
@@ -246,18 +259,20 @@ public class MyModel extends Observable implements Model
 					return sol;
 				}
 			});
-			try {
+			try 
+			{
 				future.get();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
+			} 
+			catch (InterruptedException e1) 
+			{
 				e1.printStackTrace();
-			} catch (ExecutionException e1) {
-				// TODO Auto-generated catch block
+			}
+			catch (ExecutionException e1) 
+			{
 				e1.printStackTrace();
 			}
 			outToServer.println("exit");
 			outToServer.flush();
-			System.out.println("stop");
 			try 
 			{
 				myClient.close();
@@ -270,8 +285,12 @@ public class MyModel extends Observable implements Model
 		}		
 		
 	}
-	
-	private void expandString(InputStream instream) 
+	/**
+	 * reads compressed String from the Server
+	 * @param instream <b>(InputStream)</b>
+	 * @return Nothing.
+	 */
+	/*private void expandString(InputStream instream) 
 	{
 		GZIPInputStream gs = null;
 		try 
@@ -283,6 +302,7 @@ public class MyModel extends Observable implements Model
 			e.printStackTrace();
 		}
 		   ObjectInputStream ois = null;
+		   
 		try 
 		{
 			ois = new ObjectInputStream(gs);
@@ -293,7 +313,8 @@ public class MyModel extends Observable implements Model
 		}
 		   try 
 		   {
-			   String temp = (String) ois.readObject();
+			   @SuppressWarnings("unused")
+			String temp = (String) ois.readObject();
 		   } 
 		   catch (ClassNotFoundException e) 
 		   {
@@ -304,10 +325,14 @@ public class MyModel extends Observable implements Model
 			e.printStackTrace();
 		   }
 		
-	}
+	}*/
 
 
-
+	 /**
+	   * This method gets the Solution with the specific maze name.
+	   * @param name <b>(String) </b>This is the parameter to the getSolution method.
+	   * @return sol <b>(Solution) </b>.
+	   */
 	@Override
 	public Solution getSolution() 
 	{
@@ -318,7 +343,10 @@ public class MyModel extends Observable implements Model
 		}
 		return sol;
 	}
-
+	/**
+	 * read compressed Maze class from the InputStream
+	 * @param instream the InputStream we read the compressed data from
+	 */
 	 public void expandMaze(InputStream instream)
 	 {
 			GZIPInputStream gs = null;
@@ -352,6 +380,10 @@ public class MyModel extends Observable implements Model
 				e.printStackTrace();
 			   } 
 	  }
+	 /**
+	  * read compressed Solution class from the InputStream
+	  * @param instream the InputStream we read the compressed Solution class from
+	  */
 	 public void expandSolution(InputStream instream)
 	 {
 			GZIPInputStream gs = null;
@@ -389,21 +421,14 @@ public class MyModel extends Observable implements Model
 			   } 
 	  }
 	
-	
+	/**
+	 * generates a maze in the wanted size
+	 * @param rows number of rows in the maze
+	 * @param cols number of columns in the maze
+	 */
 	@Override
 	public void generateMaze(int rows, int cols) 
 	{
-		for(String name : names)
-		{
-			if(name.equals(mazeName))
-			{
-				nameIsFine+=1;
-				setChanged();
-				notifyObservers("name in db");
-			}
-		}
-		if(nameIsFine % 2 == 0)
-		{
 			myClient = null;
 			try 
 			{
@@ -438,7 +463,7 @@ public class MyModel extends Observable implements Model
 			}
 			try 
 			{
-				expandString(myClient.getInputStream());
+				expandNames(myClient.getInputStream());
 			} 
 			catch (IOException e1) 
 			{
@@ -446,7 +471,6 @@ public class MyModel extends Observable implements Model
 			}
 			outToServer.println("generate maze"+ " " + mazeName + " " + rows + " "+ cols);
 			outToServer.flush();
-			nameIsFine = 0;
 			Future<Maze> future = executor.submit(new Callable<Maze>() 
 			{
 
@@ -457,18 +481,20 @@ public class MyModel extends Observable implements Model
 					return maze;
 				}
 			});
-			try {
+			try 
+			{
 				future.get();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
+			} 
+			catch (InterruptedException e1) 
+			{
 				e1.printStackTrace();
-			} catch (ExecutionException e1) {
-				// TODO Auto-generated catch block
+			} 
+			catch (ExecutionException e1) 
+			{
 				e1.printStackTrace();
 			}
 			outToServer.println("exit");
 			outToServer.flush();
-			System.out.println("stop");
 			try 
 			{
 				myClient.close();
@@ -479,11 +505,14 @@ public class MyModel extends Observable implements Model
 			}
 			setChanged();
 			notifyObservers("name is fine");
-		}
-		
-	}
+}
 
-	
+
+	 /**
+	   * This method gets the maze with the specific name.
+	   * @param name <b>(String) </b>This is the parameter to the getMaze method.
+	   * @return maze <b>(Maze) </b>.
+	   */
 	
 	@Override
 	public Maze getMaze() 
@@ -494,7 +523,11 @@ public class MyModel extends Observable implements Model
 		}
 		return maze;
 	}
-
+	 /**
+	   * This method solves the Maze m, in the end it adds the name of the maze, the maze itself and it's solution into the database.
+	   * @param m <b>(Maze) </b>This is the parameter to the solveMaze method
+	   * @return Nothing.
+	   */
 	@Override
 	public void solveMaze(Maze m) 
 	{
@@ -532,7 +565,7 @@ public class MyModel extends Observable implements Model
 		}
 		try 
 		{
-			expandString(myClient.getInputStream());
+			expandNames(myClient.getInputStream());
 		} 
 		catch (IOException e1) 
 		{
@@ -550,18 +583,20 @@ public class MyModel extends Observable implements Model
 				return sol;
 			}
 		});
-		try {
+		try 
+		{
 			future.get();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
+		} 
+		catch (InterruptedException e1) 
+		{
 			e1.printStackTrace();
-		} catch (ExecutionException e1) {
-			// TODO Auto-generated catch block
+		} 
+		catch (ExecutionException e1) 
+		{
 			e1.printStackTrace();
 		}
 		outToServer.println("exit");
 		outToServer.flush();
-		System.out.println("stop");
 		try 
 		{
 			myClient.close();
@@ -571,47 +606,60 @@ public class MyModel extends Observable implements Model
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	   * This method sets the name of the maze.
+	   * @param s <b>(String) </b>This is the parameter to the setName method
+	   * @return Nothing.
+	   */
 	@Override
 	public void setName(String name) 
 	{
 		this.mazeName = name;
 	}
-
+	/**
+	 * sets the solution of the maze
+	 */
 	@Override
 	public void setSol(Solution s) 
 	{
 		this.sol = s;
 	}
 	 /**
-	   * This method stops the whole process, shuts down the threadpool.
+	   * This method stops the whole process, closes down the threadpool and socket if open.
 	   * @param Nothing.
 	   * @return Nothing.
 	   */
-	
 	@Override
 	public void stop() 
 	{
-		outToServer.println("exit");
-		outToServer.flush();
-		System.out.println("stop");
-		try 
+		if(outToServer != null)
 		{
-			myClient.close();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
+			outToServer.println("exit");
+			outToServer.flush();
+			try 
+			{
+				myClient.close();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 		}
 		if(executor.isShutdown())
 			return;
 		executor.shutdown();
 		
 	}
+	 public boolean isNameIsFine() 
+	 {
+		return nameIsFine;
+	}
+
+
+	public void setNameIsFine(boolean nameIsFine) 
+	{
+		this.nameIsFine = nameIsFine;
+	}
 	
-	 /**
-	   * This method sets the name of the maze.
-	   * @param s <b>(String) </b>This is the parameter to the setName method
-	   * @return Nothing.
-	   */
+	 
 }

@@ -44,7 +44,7 @@ public class Properties implements Serializable {
 	public Properties()
 	{
 		this.threadNumber=10;
-		this.mazeSolver=MazeSolver.ASTAR_AIR_DISTANCE;
+		this.mazeSolver=MazeSolver.ASTAR_MANHATTAN_DISTANCE;
 		this.mazeGenerator=MazeGenerator.DFS_ALGO;
 		this.diagonal=true;
 		this.regCost=10;

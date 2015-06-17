@@ -63,4 +63,6 @@ public interface Model
 	   */
 	
 	void setSol(Solution s);
+	public void setNameIsFine(boolean nameIsFine);
+	public boolean isNameIsFine();
 }

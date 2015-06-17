@@ -52,20 +52,12 @@ public class Presenter implements Observer
 			//the view sends this string when the "start server" button is pressed
 			if(str2.equals("start server"))
 			{
-				System.out.println("STARTING THE SERVER.....");
 				//creating new MyTCPIPServer with the properties port number
 				start = new MyTCPIPServer(v.getProperties().getPortNumber(),m);
 				start.startServer(v.getProperties().getNumOfClients());
 				
 			}
-			//the view sends this string "close server" button is pressed
-			if(str2.equals("close server"))
-			{
-				System.out.println("CLOSING THE SERVER.....");
-				start.setStopped(true);
-				start.startServer(0);
-				
-			}
+			//the view sends this string "disconnect" button is pressed
 			if(str2.startsWith("disconnect "))
 			{
 				m.removeClient(Integer.parseInt(str2.split(" ")[1]));
@@ -74,14 +66,12 @@ public class Presenter implements Observer
 		}
 		if(arg0==m)
 		{
-			System.out.println("Getting a message from client handler");
 			String str = (String)arg1;
 			//checks if the clientHandler want to change the client's list
 			if(str.startsWith("client added"))
 			{
 				String[] temp = str.split(" ");
 				int ID = Integer.parseInt(temp[2]);
-				System.out.println("PRESENTER : THE ID IS : " + ID);
 				//runs the add client function in the View that adds a new item in the clients table
 				new Thread(new Runnable() {
 				      public void run() {

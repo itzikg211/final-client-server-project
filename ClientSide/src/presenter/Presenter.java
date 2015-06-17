@@ -1,12 +1,7 @@
 package presenter;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -91,7 +86,6 @@ public class Presenter implements Observer
 			m.setName(ints[0]);
 			Maze maze = mazes.get(command);
 			m.solveMaze(maze);
-			System.out.println("Solution for " + command + " is ready!");			
 		}		
 	}
 	/**
@@ -119,7 +113,6 @@ public class Presenter implements Observer
 		public void doCommand(String path) throws FileNotFoundException,IOException 
 		{
 			m.stop();
-	//		System.exit(0);
 		}
 		
 	}
@@ -132,7 +125,6 @@ public class Presenter implements Observer
 			if(arg!=null)
 			{
 				String str = (String)arg;
-				//System.out.println("bla bla : " + str);
 				if(str.startsWith("generate maze"))
 				{
 					String [] w = str.split(" ");
@@ -150,12 +142,11 @@ public class Presenter implements Observer
 				}	
 				else if (str.startsWith("gui solve maze"))
 				{
-					System.out.println("Doing gui solve maze command");
 					String[] sw = str.split(" ");
 					String name = sw[3];
 					int i = Integer.parseInt(sw[4]);
 					int j = Integer.parseInt(sw[5]);
-					String send = i+","+j;
+					//String send = i+","+j;
 					Solution s = setGuiSolution(name,i,j);
 					v.setSolution(s);
 				}
@@ -166,13 +157,16 @@ public class Presenter implements Observer
 				else if((String)arg=="finish")
 				{
 					Exit e = new Exit();
-					try {
+					try 
+					{
 						e.doCommand("null");
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
+					} 
+					catch (FileNotFoundException e1) 
+					{
 						e1.printStackTrace();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
+					} 
+					catch (IOException e1) 
+					{
 						e1.printStackTrace();
 					}
 				}
@@ -180,15 +174,18 @@ public class Presenter implements Observer
 				{
 					Command c = v.getUserCommand();
 					this.command = (String)arg;
-					try {
+					try 
+					{
 						
 						c.doCommand(null);
 						
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
+					} 
+					catch (FileNotFoundException e)
+					{
 						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
+					} 
+					catch (IOException e) 
+					{
 						e.printStackTrace();
 					}
 				}
@@ -202,10 +199,10 @@ public class Presenter implements Observer
 				String str = (String)arg;
 				if(str.startsWith("name in db"))
 				{
-					v.setHasName(true);
+					v.setHasName(false);
 				}
 				if(str.startsWith("name is fine"))
-					v.setHasName(false);
+					v.setHasName(true);
 				}
 			//v.printMessage((String)arg);
 		}
@@ -258,18 +255,12 @@ public class Presenter implements Observer
 	 */
 	public Maze setGuiMaze(int rows,int cols,String name)
 	{
-		/*if(mazes.keySet().contains(name))
-		{
-			System.out.println("TRY");
-			System.out.println("The maze already exist");
-			return null;
-		}*/
 		m.setName(name);
+		m.setNameIsFine(!m.isNameIsFine());
 		m.generateMaze(rows,cols);
 		Maze maze = m.getMaze();
 		mazes.put(name, maze);
 		
-		System.out.println("Solution for " + command + " is ready!");			
 		
 		return maze;
 	}

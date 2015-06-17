@@ -16,7 +16,7 @@ import presenter.Properties;
 import presenter.PropertiesServer;
 /**
  * a client handler that handles the maze clients
- * @author saroussira
+ * @author saroussi ran
  *
  */
 public class MazeHandler extends CommonClientHandler
@@ -69,14 +69,13 @@ public class MazeHandler extends CommonClientHandler
 		//PrintWriter writer = new PrintWriter(new OutputStreamWriter(outToClient));
 		String line = null;
 		m.setProperitesServer(pro);
-		compressObject("ACK",outToClient);
-		//compressObject(m.getNames(), outToClient);
+		//compressObject("ACK",outToClient);
+		compressObject(m.getNames(), outToClient);
 		try 
 		{
 			//checks id the string is "exit"
 			while(!(line = reader.readLine()).equals("exit"))
 			{
-			System.out.println(line);
 			String[] str = line.split(" ");
 			//check if client requested for a maze
 			if(str.length == 5)
@@ -154,7 +153,6 @@ public class MazeHandler extends CommonClientHandler
 		{
 			//close the communication with the client
 			reader.close();
-			System.out.println("finished communication with client");
 			//notifies the presenter that a client has disconnected
 			 //String send = "remove client " + currentID;
 			serialNumber++;
@@ -292,21 +290,6 @@ public class MazeHandler extends CommonClientHandler
 	public void setServer(ServerSocket server) 
 	{
 		this.ssock = server;
-	}
-	public void closeServer()
-	{
-		System.out.println("CLOSING THE SERVER");
-	    if (ssock != null && !ssock.isClosed()) 
-	    {
-	        try 
-	        {
-	        	ssock.close();
-	        } 
-	        catch (IOException e)
-	        {
-	            e.printStackTrace(System.err);
-	        }
-	    }
 	}
 	
 

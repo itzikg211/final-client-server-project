@@ -1,8 +1,5 @@
 package viewGUI;
 
-import java.net.Socket;
-import java.util.HashMap;
-
 import presenter.PropertiesServer;
 /**
  * an interface that defines a server GUI

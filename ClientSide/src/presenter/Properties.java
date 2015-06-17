@@ -14,7 +14,7 @@ public class Properties implements Serializable {
 	 */
 	private static final long serialVersionUID = 933599711108468L;
 	/**
-	 * enums to match the users' selscetion
+	 * enums to match the users' selection
 	 */
 	public static enum MazeGenerator 
 	{
@@ -39,7 +39,7 @@ public class Properties implements Serializable {
 	private String IpAddr;
 	private int portNumber;
 	/**
-	 * Constructs the class Properties and intializes the basic Settings
+	 * Constructs the class Properties and initializes the basic Settings
 	 */
 	public Properties()
 	{
@@ -54,7 +54,7 @@ public class Properties implements Serializable {
 		this.portNumber = 5040;
 	}
 	/**
-	 * Constructs the class Properties and intializes the class with the injected fiels
+	 * Constructs the class Properties and initializes the class with the injected fields
 	 * 
 	 */
 	public Properties(MazeSolver mazeSolver,int threadNumber,MazeGenerator mazeGenerator, Boolean diagonal,double regCost,double diagonalCost)
@@ -76,7 +76,7 @@ public class Properties implements Serializable {
 	}
 	/**
 	 * Sets the number of threads to the user's choice
-	 * @param threadNumber the number of thereads the user decided
+	 * @param threadNumber the number of threads the user decided
 	 */
 	public void setThreadNumber(int threadNumber) 
 	{
@@ -114,15 +114,15 @@ public class Properties implements Serializable {
 		this.mazeGenerator = mazeGenerator;
 	}
 	/**
-	 * @return returns if the maze solver solvs the maze with diagonals or not
+	 * @return returns if the maze solver solves the maze with diagonals or not
 	 */
 	public Boolean getDiagonal() 
 	{
 		return diagonal;
 	}
 	/**
-	 * sets if the maze solver solvs the maze with diagonals or not
-	 * @param diagonal the selcted choice
+	 * sets if the maze solver solves the maze with diagonals or not
+	 * @param diagonal the selected choice
 	 */
 	public void setDiagonal(Boolean diagonal) 
 	{

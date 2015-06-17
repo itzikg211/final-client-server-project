@@ -1,16 +1,7 @@
 package model;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 
 import presenter.PropertiesServer;
 import algorithms.demo.MazeSearch;
@@ -26,7 +17,7 @@ import algorithms.search.Solution;
 
 
 /**
-* The MyModel class, extends observable and implements the Model interface.
+* The MazeSolutionModel class implements the Model interface.
 * @author  Sarusi Ran, Gershfeld Itzik 
 * @version 1.0
 * @since   2015-05-18 
@@ -40,14 +31,13 @@ public class MazeSolutionModel implements Model
 	private Solution sol;
 	private String MazeName;
 	private HashMap<String,HashMap<Maze, Solution>> msols;
-	private HashMap<String,HashMap<Maze, Solution>> msTemp;
 	private PropertiesServer pro;
 	private String [] names;
 	
 
 	/**
-	   * This is the C'tor of MyModel. 
-	   * <p>The first thing it does is initialize the ThreadPool.
+	   * This is the C'tor of MazeSolutionModel. 
+	   * <p>The first thing it does is initialize the hashmap variables.
 	   * The second thing it does is getting all the data(name, maze, solution) from the database, from the MazeSolutionHibernate table..
 	   * @param Nothing.
 	   * @return Nothing.
@@ -58,9 +48,8 @@ public class MazeSolutionModel implements Model
 		//Initialize the threadpool.
 		//executor=Executors.newFixedThreadPool(pro.getThreadNumber());
 		msols = new HashMap<String, HashMap<Maze,Solution>>();
-		msTemp = new HashMap<String,HashMap<Maze, Solution>>();
 		//getting all the data from the database.
-        /*Configuration configuration = new Configuration();
+      /*  Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
         StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
@@ -84,7 +73,6 @@ public class MazeSolutionModel implements Model
 			names[i] = key;
 			i++;
 		}
-		System.out.println("finished receiving data from DB");
 		session.close();*/
 		
 	}
@@ -112,14 +100,14 @@ public class MazeSolutionModel implements Model
 		    			maze = mg.generateMaze(rows,cols);
 		    			HashMap<Maze, Solution> temp = new HashMap<Maze, Solution>();
 		    			temp.put(maze, null);
-		    			msTemp.put(MazeName,temp);
+		    			msols.put(MazeName,temp);
 				break;
 			case RANDOM_ALGO:
 		    			MazeGenerator mg1=new RandomMazeGenerator();
 		    			maze = mg1.generateMaze(rows,cols);
 		    			HashMap<Maze, Solution> temp1 = new HashMap<Maze, Solution>();
 		    			temp1.put(maze, null);
-		    			msTemp.put(MazeName,temp1);
+		    			msols.put(MazeName,temp1);
 				break;
 			default:
 				break;
@@ -137,12 +125,7 @@ public class MazeSolutionModel implements Model
 	@Override
 	public Maze getMaze() 
 	{
-		/*if(maze==null)
-		{
-			System.out.println("No maze yet");
-			return null;
-		}*/
-		HashMap<Maze, Solution> temp = msTemp.get(MazeName);
+		HashMap<Maze, Solution> temp = msols.get(MazeName);
 		maze = temp.keySet().iterator().next();
 		return maze;
 	}
@@ -172,7 +155,6 @@ public class MazeSolutionModel implements Model
         			sol = sol3.search(ms2);
 			break;
 			case BFS_NO_DIAGONAL:
-            		System.out.println("\nSolution BFS without diagonals");
             		MazeSearch ms1 = new MazeSearch(m,false);
             		BFS sol1 = new BFS();
             		sol = sol1.search(ms1);
@@ -184,7 +166,6 @@ public class MazeSolutionModel implements Model
         			sol = sol5.search(ams1);
 			break;
 			case ASTAR_AIR_DISTANCE:
-            		System.out.println("\nSolution A* with diagonals");
             		MazeSearch ams2 = new MazeSearch(m,true);
             		AStar sol7 = new AStar();
             		sol7.setH(new MazeAirDistance());
@@ -199,14 +180,13 @@ public class MazeSolutionModel implements Model
 			SessionFactory sessionFactory = configuration.buildSessionFactory(ssrb.build());
 			Session session = sessionFactory.openSession();
 			session.beginTransaction();
-			MazeSolutionHibernate msh = new MazeSolutionHibernate();*/
-			/*if(msols.containsKey(MazeName))
+			MazeSolutionHibernate msh = new MazeSolutionHibernate();
+			if(msols.containsKey(MazeName))
 			{
 				session.close();
-				System.out.println("You entered the same name for two different mazes, This maze and solution won't go inside the database.");
 				return;
-			}*/
-			/*msh.setMaze(maze.toString());
+			}
+			msh.setMaze(maze.toString());
 			msh.setSol(sol.toString());
 			msh.setId(MazeName);
 			session.save(msh);
@@ -232,7 +212,6 @@ public class MazeSolutionModel implements Model
 		
 		if(sol==null)
 		{
-			System.out.println("No solution yet");
 			return null;
 		}
 		return sol;
@@ -247,7 +226,6 @@ public class MazeSolutionModel implements Model
 	@Override
 	public void stop() 
 	{
-		System.out.println("stop");
 		if(executor.isShutdown())
 			return;
 		executor.shutdown();
@@ -279,13 +257,16 @@ public class MazeSolutionModel implements Model
 		this.sol = s;
 	}
 
+	/**
+	 * returns a solution from the place represented by the string s (state)
+	 * @param String s the string representing the state
+	 * @return s <b>(Solution) </b>
+	 */
 	@Override
 	public Solution getSolution(String s) 
 	{
-		System.out.println("GETTING THE HINT SOLUTION");
 		if(maze==null)
 		{
-			System.out.println("The hint maze is null");
 			return null;
 		}
 		else
@@ -299,7 +280,6 @@ public class MazeSolutionModel implements Model
         			sol = sol3.search(ms2);
         			break;
 			case BFS_NO_DIAGONAL:
-            		System.out.println("\nSolution BFS without diagonals");
             		MazeSearch ms1 = new MazeSearch(maze,false);
             		ms1.setStartState(s);
             		BFS sol2 = new BFS();
@@ -313,7 +293,6 @@ public class MazeSolutionModel implements Model
         			sol = sol5.search(ams1);
         			break;
 			case ASTAR_AIR_DISTANCE:
-            		System.out.println("\nSolution A* with diagonals");
             		MazeSearch ams2 = new MazeSearch(maze,true);
             		ams2.setStartState(s);
             		AStar sol7 = new AStar();
@@ -330,13 +309,22 @@ public class MazeSolutionModel implements Model
 	{
 		return names;
 	}
+	/**
+	   * This method sets the names of the mazes in the DB.
+	   * @param s <b>(String []) </b>This is the parameter to the setNames method
+	   * @return Nothing.
+	   */
 	@Override
 	public void setNames(String[] names) 
 	{
 		this.names = names;
 	}
 	
-	
+	/**
+	   * This method sets the PropertiesServer of the MazeSolutionModel.
+	   * @param pro <b>(PropertiesServer) </b>This is the parameter to the setProperitesServer method
+	   * @return Nothing.
+	   */
 	public void setProperitesServer(PropertiesServer pro)
 	{
 		this.pro = pro;

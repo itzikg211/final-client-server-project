@@ -17,9 +17,28 @@ public class Run {
 	   */
 	public static void main(String[] args) 
 	{
-		GUIStart gui = new GUIStart("Start",1200,790);
+		GUIStart gui = new GUIStart("Start",1020,775);
 		gui.run();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Reads the properties from the XML file and sets the project's properties.
 	 * @return the class properties with the selceted fields

@@ -2,13 +2,10 @@ package GUI;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 
 import javax.sound.sampled.AudioInputStream;
@@ -21,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -67,6 +63,7 @@ public class StartWindow extends BasicWindow implements View
 	Boat b;
 	boolean solvedAlready = false;
 	boolean hasWonForMusic;
+	boolean nameIsFine;
 	/**
 	 * Constructs the start window 
 	 * @param title the title of the start window
@@ -77,8 +74,6 @@ public class StartWindow extends BasicWindow implements View
 	{
 		super(title, width, height);
 		properties = new Properties();
-		//BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		//PrintWriter writer = new PrintWriter(System.out);
 	}
 
 	@Override
@@ -99,34 +94,22 @@ public class StartWindow extends BasicWindow implements View
 	{
 		return command;
 	}
+	
+	@Override
+	public void displayMaze(Maze m) 
+	{
+	}
 	/**
 	 * Displays the selected solution
 	 * @param s the selected solution
 	 */
 	@Override
-	public void displayMaze(Maze m) 
+	public void displaySolution(Solution s) 
 	{
-		//need to complete TODO
-		
 	}
 	/**
 	 * Sets the hashmap of commands in the view
 	 * @param commands2
-	 */
-	@Override
-	public void displaySolution(Solution s) 
-	{
-		//need to complete TODO
-		
-	}
-	
-	public void setChangedFunc()
-	{
-		setChanged();
-	}
-	/**
-	 * prints a message sent from the model
-	 * @param str
 	 */
 	@Override
 	public void setCommands(HashMap<String, Command> commands2) 
@@ -134,6 +117,7 @@ public class StartWindow extends BasicWindow implements View
 		this.commands = commands2;
 		
 	}
+	
 	/**
 	 * shows a message box with the received string to the user
 	 */
@@ -147,7 +131,7 @@ public class StartWindow extends BasicWindow implements View
 		
 	}
 	/**
-	 * the function that sets the qrguments in the start window
+	 * the function that sets the widgets in the start window
 	 */
 	@Override
 	void initWidgets() 
@@ -213,10 +197,10 @@ public class StartWindow extends BasicWindow implements View
 		a.setText("Generate the maze");
 		a.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1,1));
 		Button hint=new Button(shell, SWT.PUSH);
-		hint.setText("Give me a hint ✆");
+		hint.setText("Give me a hint");
 		hint.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1,1));
 		Button solve=new Button(shell, SWT.PUSH);
-		solve.setText("Solve the maze ☺");
+		solve.setText("Solve the maze");
 		solve.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1,1));
 		
 		
@@ -296,9 +280,8 @@ public class StartWindow extends BasicWindow implements View
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 		/**
@@ -321,9 +304,8 @@ public class StartWindow extends BasicWindow implements View
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 		/**
@@ -344,7 +326,6 @@ public class StartWindow extends BasicWindow implements View
 				} 
 				catch (FileNotFoundException e1) 
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				xmle.flush();
@@ -362,74 +343,23 @@ public class StartWindow extends BasicWindow implements View
 					}
 					else
 					{
-						/////check if the maze name is already inside the database
-						boolean flag = true;
-						/*String [] names = null;
-							BufferedReader reader = null;
-							try {
-								reader = new BufferedReader(new FileReader("names.txt"));
-							} catch (FileNotFoundException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							String line;
-							try 
-							{
-								while ((line = reader.readLine()) != null)
-								{
-									names = line.split("#");
-								}
-							} 
-							catch (IOException ee) 
-							{
-								// TODO Auto-generated catch block
-								ee.printStackTrace();
-							}
-							
-							
-						if(names != null)
+						gameBoard.redraw();
+						solvedAlready = false;
+						hasWonForMusic = false;
+						gameBoard.setX(0);
+						gameBoard.setY(0);
+						String send = "generate maze ";
+						send = send + str;
+						send = send + " " + numR + " " + numC ;
+						setChanged();
+						notifyObservers(send);
+
+						if(myMaze!=null)
 						{
-							for(String s: names)
-							{
-								if(s.equals(t.getText()))
-								{
-									flag = false;
-								}	
-							}
-							if(flag == false)
-							{
-								MessageBox mb = new MessageBox(shell,SWT.ICON_ERROR);
-								mb.setText("Error");
-								mb.setMessage("Error! the name is already exists in the database");
-								mb.open();
-							}
-						}*/
-						if(flag == true)
-						{
-							gameBoard.redraw();
-							solvedAlready = false;
-							hasWonForMusic = false;
-							gameBoard.setX(0);
-							gameBoard.setY(0);
-							//myMaze = new DFSMazeGenerator().generateMaze(numR, numC);
-							String send = "generate maze ";
-							send = send + str;
-							send = send + " " + numR + " " + numC ;
-							setChanged();
-							notifyObservers(send);
-							if(myMaze!=null)
-							{
-								gameBoard.displayBoard(myMaze);
-								//maze.printBoat();
-								gameBoard.forceFocus();
-							}	
+							gameBoard.displayBoard(myMaze);
+							gameBoard.forceFocus();
 						}
-						
 					}
-					
-					
-					/*maze.displayMaze(new DFSMazeGenerator().generateMaze(numR, numC));
-					maze.forceFocus();*/
 				}
 				else
 				{
@@ -455,7 +385,6 @@ public class StartWindow extends BasicWindow implements View
 			public void widgetSelected(SelectionEvent arg0)
 			{
 				String str = "hint " + gameBoard.getX() + " " + gameBoard.getY();
-				System.out.println("hint str : " + str);
 				setChanged();
 				notifyObservers(str);
 				//put the relevant string representing the current state here
@@ -468,16 +397,13 @@ public class StartWindow extends BasicWindow implements View
 					gameBoard.setHint(i, j);					
 					gameBoard.forceFocus();
 				}
-				else
-					System.out.println("The hint solution is null");
 
 				
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 		/**
@@ -489,26 +415,21 @@ public class StartWindow extends BasicWindow implements View
 			public void widgetSelected(SelectionEvent arg0) 
 			{
 				/////
-				System.out.println("solving the maze " + t.getText());
 				String send = "gui solve maze ";
 				send += t.getText();
 				int x =  gameBoard.getX();
 				int y = gameBoard.getY();
 				String add = " " + x + " " + y;
 				send += add;
-				System.out.println("POSITION OF THE BOAT : " + gameBoard.getX() +","+gameBoard.getY());
-				System.out.println("SEND : " + send);
 				if(solvedAlready == false)
 				{
 					setChanged();
 					notifyObservers(send);
 					if(sol==null)
 					{
-						System.out.println("The solution is null");
 					}
 					else
 					{
-						System.out.println("The solution is NOT null");
 						
 						gameBoard.displaySolution(sol);
 						gameBoard.forceFocus();
@@ -525,48 +446,11 @@ public class StartWindow extends BasicWindow implements View
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent arg0) 
+			{
 			}
 		});
 	
-		
-		
-		gameBoard.addMouseListener(new MouseListener() {
-		
-		public void mouseUp(MouseEvent arg0) //when you leave the mouse 
-		{
-			// TODO Auto-generated method stub
-			int a = gameBoard.getDisplay().getCursorLocation().x;
-			int b = gameBoard.getDisplay().getCursorLocation().y;
-			String pos = "leave position : " + a + "," + b;
-			/*if(a==clickI && b==clickJ)
-			{
-				System.out.println("mouse didnt move!");
-			}*/
-			System.out.println(pos);
-		}
-		
-		@Override
-		public void mouseDown(MouseEvent arg0) { //when you press the mouse
-			// TODO Auto-generated method stub
-			
-			int a = gameBoard.getDisplay().getCursorLocation().x;
-			int b = gameBoard.getDisplay().getCursorLocation().y;
-			//clickI=a;
-			//clickJ=b;
-			String pos = "click position : " + a + "," + b;
-			System.out.println(pos);
-			
-		}
-		
-		@Override
-		public void mouseDoubleClick(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-	});
 		
 		
 		MessageBox m = new MessageBox(shell);
@@ -574,12 +458,11 @@ public class StartWindow extends BasicWindow implements View
 		/**
 		 * handles the user's key events
 		 */
-		gameBoard.addKeyListener(new KeyListener(){
-			//Boat b = new Boat();
+		gameBoard.addKeyListener(new KeyListener()
+		{
 			@Override
 			public void keyPressed(KeyEvent e) {
 				
-				System.out.println("Place : "+gameBoard.getX()+","+gameBoard.getY());
 				if(e.keyCode == SWT.ESC)
 				{
 					int style = SWT.ICON_QUESTION |SWT.YES | SWT.NO;
@@ -601,110 +484,77 @@ public class StartWindow extends BasicWindow implements View
 				}
 				if(e.keyCode == SWT.ARROW_UP)
 				{
-					System.out.println("UP");
 					if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 0))
 					{
-						System.out.println("CAN MOVE");
 						gameBoard.SetCharacterDirection(0);
 						gameBoard.setCharacterPosition(gameBoard.getX()-1,gameBoard.getY());
 						NumberOfMoves++;
 					}
-					else
-						System.out.println("CAN NOT MOVE");
 				}
 					 
 				
 			if(e.keyCode == SWT.ARROW_DOWN)
 			{
-				System.out.println("down");
 				if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 2))
 				{
-					System.out.println("CAN MOVE");
 					gameBoard.SetCharacterDirection(2);
 					gameBoard.setCharacterPosition(gameBoard.getX()+1,gameBoard.getY());
 					NumberOfMoves++;
 				}
-				else
-					System.out.println("CAN NOT MOVE");
 			}
 			if(e.keyCode == SWT.ARROW_LEFT)
 			{
-				System.out.println("left");
 				if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 3))
 				{
-					System.out.println("CAN MOVE");
 					gameBoard.SetCharacterDirection(3);
 					gameBoard.setCharacterPosition(gameBoard.getX(),gameBoard.getY()-1);
 					NumberOfMoves++;
 				}
-				else
-					System.out.println("CAN NOT MOVE");
 			}
 			if(e.keyCode == SWT.ARROW_RIGHT)
 			{
-				System.out.println("right");
 				if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 1))
 				{
-					System.out.println("CAN MOVE");
 					gameBoard.SetCharacterDirection(1);
 					gameBoard.setCharacterPosition(gameBoard.getX(),gameBoard.getY()+1);
 					NumberOfMoves++;
 				}
-				else
-					System.out.println("CAN NOT MOVE");
 				
 			}
 			if(e.keyCode == SWT.KEYPAD_7)
 			{
-				System.out.println("UP-LEFT");
 				if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 4))
 				{
-					System.out.println("CAN MOVE");
 					gameBoard.SetCharacterDirection(3);
 					gameBoard.setCharacterPosition(gameBoard.getX()-1,gameBoard.getY()-1);	
 					NumberOfMoves++;
 				}
-				else
-					System.out.println("CAN NOT MOVE");
 			}
 			if(e.keyCode == SWT.KEYPAD_9)
 			{
-				System.out.println("UP-RIGHT");
 				if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 5))
 				{
-					System.out.println("CAN MOVE");
 					gameBoard.SetCharacterDirection(1);
 					gameBoard.setCharacterPosition(gameBoard.getX()-1,gameBoard.getY()+1);
 					NumberOfMoves++;
 				}
-				else
-					System.out.println("CAN NOT MOVE");
 			}
 			if(e.keyCode == SWT.KEYPAD_1)
 			{
-				System.out.println("DOWN-LEFT");
 				if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 6))
 				{
-					System.out.println("CAN MOVE");
-					gameBoard.SetCharacterDirection(3);
 					gameBoard.setCharacterPosition(gameBoard.getX()+1,gameBoard.getY()-1);	
 					NumberOfMoves++;
 				}
-				else
-					System.out.println("CAN NOT MOVE");
 			}
 			if(e.keyCode == SWT.KEYPAD_3)
 			{
-				System.out.println("DOWN-RIGHT");
 				if(gameBoard.canMove(gameBoard.getX(),gameBoard.getY(), 7))
 				{
-					System.out.println("CAN MOVE");
 					gameBoard.SetCharacterDirection(1);
 					gameBoard.setCharacterPosition(gameBoard.getX()+1,gameBoard.getY()+1);	
 					NumberOfMoves++;
 				}
-				else
-					System.out.println("CAN NOT MOVE");
 			}
 			
 			}
@@ -731,7 +581,6 @@ public class StartWindow extends BasicWindow implements View
 						{
 						    ex.printStackTrace();
 						}
-						System.out.println("FINISHED!");
 						m.setMessage("Congrats! you finished the maze using " + NumberOfMoves + " moves!");
 						m.open();
 					}
@@ -770,8 +619,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) 
 			{
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		/**
@@ -797,7 +644,6 @@ public class StartWindow extends BasicWindow implements View
 				} 
 				catch (FileNotFoundException e1) 
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
@@ -819,7 +665,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) 
 			{
-				// TODO Auto-generated method stub
 			}
 		});
 		/**
@@ -838,8 +683,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) 
 			{
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		/**
@@ -862,8 +705,6 @@ public class StartWindow extends BasicWindow implements View
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0)
 			{
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		
@@ -901,7 +742,6 @@ public class StartWindow extends BasicWindow implements View
 	@Override
 	public void setSolution(Solution s) 
 	{
-		System.out.println("Sets the maze");
 		sol = s;
 		
 	}
@@ -916,15 +756,14 @@ public class StartWindow extends BasicWindow implements View
 	}
 
 	@Override
-	public void setHasName(boolean value) {
-		// TODO Auto-generated method stub
-		
+	public void setHasName(boolean value)
+	{
+		nameIsFine = value;
 	}
 
 	@Override
 	public boolean getHasName() {
-		// TODO Auto-generated method stub
-		return false;
+		return nameIsFine;
 	}
 	public void setGameBoard(CommonGameBoard cgb)
 	{
